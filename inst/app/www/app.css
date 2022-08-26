@@ -1,0 +1,9 @@
+#app {
+  min-height: 80vh;
+}
+
+#report iframe {
+  min-height: 80vh;
+  width: 100%;
+  border: none;
+}
