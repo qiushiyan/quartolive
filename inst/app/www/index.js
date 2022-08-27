@@ -653,6 +653,9 @@ var reload_preview = () => {
     iframe.contentWindow.location.reload();
   }
 };
+var send_editor_code = (editor) => {
+  Shiny.setInputValue("quarto_code", editor.getValue());
+};
 
 // srcts/index.ts
 import_loader.default.init().then((monaco) => {
@@ -662,8 +665,13 @@ import_loader.default.init().then((monaco) => {
     language: "markdown"
   };
   const editor = monaco.editor.create(wrapper, properties);
+  document.addEventListener("keydown", (event) => {
+    if (event.ctrlKey && event.key == "K") {
+      send_editor_code(editor);
+    }
+  });
   Shiny.addCustomMessageHandler("knit", function(message) {
-    Shiny.setInputValue("quarto_code", editor.getValue());
+    send_editor_code(editor);
   });
   Shiny.addCustomMessageHandler("refresh_preview", (message) => {
     reload_preview();
