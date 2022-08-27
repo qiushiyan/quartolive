@@ -8,15 +8,17 @@ app_ui <- function(request) {
   tagList(
     golem_add_external_resources(),
     fluidPage(
+      # theme = bslib::bs_theme(version = 5),
       fluidRow(
         h1("quartolive"),
-        actionButton("render", "Render"),
+        actionButton("knit", "Knit"),
+        HTML("&nbsp"),
       ),
       col_6(
         div(id = "app"),
       ),
       col_6(
-        uiOutput("report")
+        uiOutput("out")
       )
     )
   )
@@ -43,7 +45,6 @@ golem_add_external_resources <- function() {
       app_title = "quartolive"
     ),
     tags$title("Quarto editor in Shiny"),
-    tags$link(rel = "stylesheet", href = "./www/app.css", type = "text/css"),
-    HTML('<script defer src="./www/index.js"></script>')
+    HTML('<script defer src="www/index.js"></script>')
   )
 }

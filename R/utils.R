@@ -24,3 +24,23 @@ merge <- function(x, y) {
 
   x
 }
+
+yaml_load <- function(...) {
+  yaml::yaml.load(..., eval.expr = TRUE)
+}
+
+# from ymlthis::yml_handlers
+yml_handlers <- function() {
+  list(
+    `NULL` = function(x) yml_verbatim("null"), glue = function(x) as.character(x),
+    Date = function(x) as.character(x), logical = function(x) {
+      yml_verbatim(ifelse(x, "true", "false"))
+    }
+  )
+}
+
+yml_verbatim <- function (x)
+{
+  structure(x, class = "verbatim")
+}
+

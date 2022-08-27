@@ -645,6 +645,16 @@ var require_cjs = __commonJS({
 
 // srcts/index.ts
 var import_loader = __toESM(require_cjs());
+
+// srcts/utils.ts
+var reload_preview = () => {
+  const iframe = document.getElementById("preview_frame");
+  if (iframe !== null) {
+    iframe.contentWindow.location.reload();
+  }
+};
+
+// srcts/index.ts
 import_loader.default.init().then((monaco) => {
   const wrapper = document.getElementById("app");
   const properties = {
@@ -652,7 +662,10 @@ import_loader.default.init().then((monaco) => {
     language: "markdown"
   };
   const editor = monaco.editor.create(wrapper, properties);
-  Shiny.addCustomMessageHandler("render", function(message) {
+  Shiny.addCustomMessageHandler("knit", function(message) {
     Shiny.setInputValue("quarto_code", editor.getValue());
+  });
+  Shiny.addCustomMessageHandler("refresh_preview", (message) => {
+    reload_preview();
   });
 });

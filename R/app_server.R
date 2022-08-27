@@ -5,52 +5,35 @@
 #' @import shiny
 #' @noRd
 app_server <- function(input, output, session) {
-  observeEvent(input$render, {
-    session$sendCustomMessage("render", list())
+  observeEvent(input$knit, {
+    golem::invoke_js("knit", list())
   })
 
+  rv <- reactiveValues(error = NULL)
 
   observeEvent(input$quarto_code, {
+    print(input$quarto_code)
     input_file <- tempfile(fileext = ".qmd")
+    res <- knit(input$quarto_code, input_file = input_file)
+    if (inherits(res, "try-error")) {
+      rv$error <- res
+    } else {
+      rv$error <- NULL
+      output_file <- xfun::with_ext(input_file, "html")
+      fs::file_copy(output_file, app_sys("app/www/index.html"), overwrite = TRUE)
+      golem::invoke_js("refresh_preview", list())
+    }
+  })
 
-    code <- unlist(strsplit(input$quarto_code, "\n"))
-    quarto_data <- rmarkdown:::partition_yaml_front_matter(code)
-    header <- rmarkdown:::parse_yaml_front_matter(quarto_data$front_matter)
-    body <- quarto_data$body
-
-    use_html <- !is.null(header[["format"]][["html"]])
-    not_self_contained <- is.null(header[["format"]][["html"]][["self-contained"]])
-
-    if (is.null(header[["format"]]) || (not_self_contained)) {
-      header <- merge(
-        header,
-        list(format = list(html = list("self-contained" = TRUE)))
+  output$out <- renderUI({
+    if (!is.null(rv$error)) {
+      p(rv$error)
+    } else {
+      tags$iframe(
+        src = "./www/index.html",
+        id = "preview_frame"
       )
     }
-
-    header <- ymlthis::use_rmarkdown(
-      ymlthis::as_yml(header),
-      path = input_file,
-      body = body,
-      quiet = TRUE,
-      overwrite = TRUE,
-      open_doc = FALSE
-    )
-
-    quarto::quarto_render(
-      input = input_file,
-      quiet = TRUE
-    )
-
-    output_file <- xfun::with_ext(input_file, "html")
-    print(output_file)
-    fs::file_copy(output_file, app_sys("app/www/index.html"), overwrite = TRUE)
   })
 
-  output$report <- renderUI({
-    input$quarto_code
-    tagList(
-      tags$iframe(src = "./www/index.html")
-    )
-  })
 }
