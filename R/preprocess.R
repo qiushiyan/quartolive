@@ -95,8 +95,7 @@ is_html <- function(header) {
 }
 
 is_self_contained <- function(header) {
-  is_html(header) &&
-    is.list(header[["format"]][["html"]]) &&
+  is.list(header[["format"]][["html"]]) &&
     "self-contained" %in% names(header[["format"]][["html"]])
 }
 

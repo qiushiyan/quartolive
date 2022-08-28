@@ -1,12 +1,15 @@
-import { editor } from "monaco-editor";
-
-export const reload_preview = (prefix: string) => {
-  const iframe = document.getElementById(
-    `${prefix}-preview_frame`
-  ) as HTMLIFrameElement;
-  if (iframe !== null) {
-    iframe.contentWindow!.location.reload();
+export const reload_preview = (prefix: string = "") => {
+  let class_name = "preview-frame";
+  if (prefix) {
+    class_name = `${prefix}-${class_name}`;
   }
+  const iframes = document.querySelectorAll(`.${class_name}`);
+  console.log("found iframes", iframes);
+  iframes.forEach((iframe) => {
+    if (iframe !== null && iframe instanceof HTMLIFrameElement) {
+      iframe.contentWindow!.location.reload();
+    }
+  });
 };
 
 export const send_editor_code = (

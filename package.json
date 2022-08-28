@@ -14,7 +14,8 @@
     "@types/rstudio-shiny": "github:rstudio/shiny#v1.7.0",
     "monaco-editor": "^0.34.0",
     "monaco-textmate": "^3.0.1",
-    "onigasm": "^2.2.5"
+    "onigasm": "^2.2.5",
+    "split.js": "^1.6.5"
   },
   "devDependencies": {
     "esbuild": "^0.15.5",

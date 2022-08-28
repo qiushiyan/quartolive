@@ -1,5 +1,6 @@
 import loader from "@monaco-editor/loader";
 import { reload_preview, send_editor_code } from "./utils";
+import Split from "split.js";
 
 loader.init().then((monaco) => {
   const wrapper = document.getElementById("app")!;
@@ -8,6 +9,8 @@ loader.init().then((monaco) => {
   const properties = {
     value: "# Heading 1",
     language: "markdown",
+    minimap: { enabled: false },
+    automaticLayout: true,
   };
 
   const editor = monaco.editor.create(wrapper, properties);
@@ -26,12 +29,10 @@ loader.init().then((monaco) => {
     send_editor_code(`quarto_code`, editor.getValue(), message.prefix);
   });
 
-  Shiny.addCustomMessageHandler(
-    "reload_preview",
-    (message: RefreshPreviewMessage) => {
-      reload_preview(message.prefix);
-    }
-  );
+  Shiny.addCustomMessageHandler("reload_preview", (message: any) => {
+    console.log("reload preview message received");
+    reload_preview();
+  });
 
   Shiny.addCustomMessageHandler(
     "update_code",
@@ -40,3 +41,5 @@ loader.init().then((monaco) => {
     }
   );
 });
+
+Split(["#editor-pane", "#preview-pane"]);

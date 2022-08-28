@@ -8,16 +8,18 @@ app_ui <- function(request) {
   tagList(
     golem_add_external_resources(),
     fluidPage(
-      # theme = bslib::bs_theme(version = 5),
-      fluidRow(
-        h1("quartolive"),
-        HTML("&nbsp"),
-      ),
-      col_6(
-        mod_editor_ui("editor")
-      ),
-      col_6(
-        mod_preview_ui("preview")
+      theme = bslib::bs_theme(version = 5),
+      h1("quartolive"),
+      div(
+        col_6(
+          mod_editor_ui("editor"),
+          id = "editor-pane"
+        ),
+        col_6(
+          mod_preview_ui("preview"),
+          id = "preview-pane"
+        ),
+        class = "split"
       )
     )
   )
@@ -44,6 +46,7 @@ golem_add_external_resources <- function() {
       app_title = "quartolive"
     ),
     tags$title("Quarto editor in Shiny"),
-    HTML('<script defer src="www/index.js"></script>')
+    HTML('<script defer src="www/index.js"></script>'),
+    waiter::use_waiter()
   )
 }

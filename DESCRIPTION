@@ -7,10 +7,14 @@ License: MIT + file LICENSE
 Imports:
     bslib,
     config (>= 0.3.1),
+    fs,
+    furrr,
     golem (>= 0.3.3),
+    purrr,
     quarto,
     shiny (>= 1.7.2),
-    styler (>= 1.7.0.9001)
+    styler (>= 1.7.0.9001),
+    waiter
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.1
@@ -19,5 +23,5 @@ BugReports: https://github.com/quartolive/issues
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-Remotes:  
+Remotes: 
     r-lib/styler

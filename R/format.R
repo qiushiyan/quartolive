@@ -1,5 +1,5 @@
 format_qmd <- function(raw) {
-  f <- tempfile(fileext = ".qmd")
+  f <- create_qmd()
   xfun::write_utf8(raw, f)
   utils::capture.output(styler::style_file(f))
 

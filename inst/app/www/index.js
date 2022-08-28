@@ -643,17 +643,508 @@ var require_cjs = __commonJS({
   }
 });
 
+// node_modules/.pnpm/split.js@1.6.5/node_modules/split.js/dist/split.js
+var require_split = __commonJS({
+  "node_modules/.pnpm/split.js@1.6.5/node_modules/split.js/dist/split.js"(exports, module2) {
+    (function(global, factory) {
+      typeof exports === "object" && typeof module2 !== "undefined" ? module2.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.Split = factory());
+    })(exports, function() {
+      "use strict";
+      var global = typeof window !== "undefined" ? window : null;
+      var ssr = global === null;
+      var document2 = !ssr ? global.document : void 0;
+      var addEventListener = "addEventListener";
+      var removeEventListener = "removeEventListener";
+      var getBoundingClientRect = "getBoundingClientRect";
+      var gutterStartDragging = "_a";
+      var aGutterSize = "_b";
+      var bGutterSize = "_c";
+      var HORIZONTAL = "horizontal";
+      var NOOP = function() {
+        return false;
+      };
+      var calc = ssr ? "calc" : ["", "-webkit-", "-moz-", "-o-"].filter(function(prefix) {
+        var el = document2.createElement("div");
+        el.style.cssText = "width:" + prefix + "calc(9px)";
+        return !!el.style.length;
+      }).shift() + "calc";
+      var isString = function(v) {
+        return typeof v === "string" || v instanceof String;
+      };
+      var elementOrSelector = function(el) {
+        if (isString(el)) {
+          var ele = document2.querySelector(el);
+          if (!ele) {
+            throw new Error("Selector " + el + " did not match a DOM element");
+          }
+          return ele;
+        }
+        return el;
+      };
+      var getOption = function(options, propName, def) {
+        var value = options[propName];
+        if (value !== void 0) {
+          return value;
+        }
+        return def;
+      };
+      var getGutterSize = function(gutterSize, isFirst, isLast, gutterAlign) {
+        if (isFirst) {
+          if (gutterAlign === "end") {
+            return 0;
+          }
+          if (gutterAlign === "center") {
+            return gutterSize / 2;
+          }
+        } else if (isLast) {
+          if (gutterAlign === "start") {
+            return 0;
+          }
+          if (gutterAlign === "center") {
+            return gutterSize / 2;
+          }
+        }
+        return gutterSize;
+      };
+      var defaultGutterFn = function(i, gutterDirection) {
+        var gut = document2.createElement("div");
+        gut.className = "gutter gutter-" + gutterDirection;
+        return gut;
+      };
+      var defaultElementStyleFn = function(dim, size, gutSize) {
+        var style = {};
+        if (!isString(size)) {
+          style[dim] = calc + "(" + size + "% - " + gutSize + "px)";
+        } else {
+          style[dim] = size;
+        }
+        return style;
+      };
+      var defaultGutterStyleFn = function(dim, gutSize) {
+        var obj;
+        return obj = {}, obj[dim] = gutSize + "px", obj;
+      };
+      var Split2 = function(idsOption, options) {
+        if (options === void 0)
+          options = {};
+        if (ssr) {
+          return {};
+        }
+        var ids = idsOption;
+        var dimension;
+        var clientAxis;
+        var position;
+        var positionEnd;
+        var clientSize;
+        var elements;
+        if (Array.from) {
+          ids = Array.from(ids);
+        }
+        var firstElement = elementOrSelector(ids[0]);
+        var parent = firstElement.parentNode;
+        var parentStyle = getComputedStyle ? getComputedStyle(parent) : null;
+        var parentFlexDirection = parentStyle ? parentStyle.flexDirection : null;
+        var sizes = getOption(options, "sizes") || ids.map(function() {
+          return 100 / ids.length;
+        });
+        var minSize = getOption(options, "minSize", 100);
+        var minSizes = Array.isArray(minSize) ? minSize : ids.map(function() {
+          return minSize;
+        });
+        var maxSize = getOption(options, "maxSize", Infinity);
+        var maxSizes = Array.isArray(maxSize) ? maxSize : ids.map(function() {
+          return maxSize;
+        });
+        var expandToMin = getOption(options, "expandToMin", false);
+        var gutterSize = getOption(options, "gutterSize", 10);
+        var gutterAlign = getOption(options, "gutterAlign", "center");
+        var snapOffset = getOption(options, "snapOffset", 30);
+        var snapOffsets = Array.isArray(snapOffset) ? snapOffset : ids.map(function() {
+          return snapOffset;
+        });
+        var dragInterval = getOption(options, "dragInterval", 1);
+        var direction = getOption(options, "direction", HORIZONTAL);
+        var cursor = getOption(
+          options,
+          "cursor",
+          direction === HORIZONTAL ? "col-resize" : "row-resize"
+        );
+        var gutter = getOption(options, "gutter", defaultGutterFn);
+        var elementStyle = getOption(
+          options,
+          "elementStyle",
+          defaultElementStyleFn
+        );
+        var gutterStyle = getOption(options, "gutterStyle", defaultGutterStyleFn);
+        if (direction === HORIZONTAL) {
+          dimension = "width";
+          clientAxis = "clientX";
+          position = "left";
+          positionEnd = "right";
+          clientSize = "clientWidth";
+        } else if (direction === "vertical") {
+          dimension = "height";
+          clientAxis = "clientY";
+          position = "top";
+          positionEnd = "bottom";
+          clientSize = "clientHeight";
+        }
+        function setElementSize(el, size, gutSize, i) {
+          var style = elementStyle(dimension, size, gutSize, i);
+          Object.keys(style).forEach(function(prop) {
+            el.style[prop] = style[prop];
+          });
+        }
+        function setGutterSize(gutterElement, gutSize, i) {
+          var style = gutterStyle(dimension, gutSize, i);
+          Object.keys(style).forEach(function(prop) {
+            gutterElement.style[prop] = style[prop];
+          });
+        }
+        function getSizes() {
+          return elements.map(function(element) {
+            return element.size;
+          });
+        }
+        function getMousePosition(e) {
+          if ("touches" in e) {
+            return e.touches[0][clientAxis];
+          }
+          return e[clientAxis];
+        }
+        function adjust(offset) {
+          var a = elements[this.a];
+          var b = elements[this.b];
+          var percentage = a.size + b.size;
+          a.size = offset / this.size * percentage;
+          b.size = percentage - offset / this.size * percentage;
+          setElementSize(a.element, a.size, this[aGutterSize], a.i);
+          setElementSize(b.element, b.size, this[bGutterSize], b.i);
+        }
+        function drag(e) {
+          var offset;
+          var a = elements[this.a];
+          var b = elements[this.b];
+          if (!this.dragging) {
+            return;
+          }
+          offset = getMousePosition(e) - this.start + (this[aGutterSize] - this.dragOffset);
+          if (dragInterval > 1) {
+            offset = Math.round(offset / dragInterval) * dragInterval;
+          }
+          if (offset <= a.minSize + a.snapOffset + this[aGutterSize]) {
+            offset = a.minSize + this[aGutterSize];
+          } else if (offset >= this.size - (b.minSize + b.snapOffset + this[bGutterSize])) {
+            offset = this.size - (b.minSize + this[bGutterSize]);
+          }
+          if (offset >= a.maxSize - a.snapOffset + this[aGutterSize]) {
+            offset = a.maxSize + this[aGutterSize];
+          } else if (offset <= this.size - (b.maxSize - b.snapOffset + this[bGutterSize])) {
+            offset = this.size - (b.maxSize + this[bGutterSize]);
+          }
+          adjust.call(this, offset);
+          getOption(options, "onDrag", NOOP)(getSizes());
+        }
+        function calculateSizes() {
+          var a = elements[this.a].element;
+          var b = elements[this.b].element;
+          var aBounds = a[getBoundingClientRect]();
+          var bBounds = b[getBoundingClientRect]();
+          this.size = aBounds[dimension] + bBounds[dimension] + this[aGutterSize] + this[bGutterSize];
+          this.start = aBounds[position];
+          this.end = aBounds[positionEnd];
+        }
+        function innerSize(element) {
+          if (!getComputedStyle) {
+            return null;
+          }
+          var computedStyle = getComputedStyle(element);
+          if (!computedStyle) {
+            return null;
+          }
+          var size = element[clientSize];
+          if (size === 0) {
+            return null;
+          }
+          if (direction === HORIZONTAL) {
+            size -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
+          } else {
+            size -= parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom);
+          }
+          return size;
+        }
+        function trimToMin(sizesToTrim) {
+          var parentSize = innerSize(parent);
+          if (parentSize === null) {
+            return sizesToTrim;
+          }
+          if (minSizes.reduce(function(a, b) {
+            return a + b;
+          }, 0) > parentSize) {
+            return sizesToTrim;
+          }
+          var excessPixels = 0;
+          var toSpare = [];
+          var pixelSizes = sizesToTrim.map(function(size, i) {
+            var pixelSize = parentSize * size / 100;
+            var elementGutterSize = getGutterSize(
+              gutterSize,
+              i === 0,
+              i === sizesToTrim.length - 1,
+              gutterAlign
+            );
+            var elementMinSize = minSizes[i] + elementGutterSize;
+            if (pixelSize < elementMinSize) {
+              excessPixels += elementMinSize - pixelSize;
+              toSpare.push(0);
+              return elementMinSize;
+            }
+            toSpare.push(pixelSize - elementMinSize);
+            return pixelSize;
+          });
+          if (excessPixels === 0) {
+            return sizesToTrim;
+          }
+          return pixelSizes.map(function(pixelSize, i) {
+            var newPixelSize = pixelSize;
+            if (excessPixels > 0 && toSpare[i] - excessPixels > 0) {
+              var takenPixels = Math.min(
+                excessPixels,
+                toSpare[i] - excessPixels
+              );
+              excessPixels -= takenPixels;
+              newPixelSize = pixelSize - takenPixels;
+            }
+            return newPixelSize / parentSize * 100;
+          });
+        }
+        function stopDragging() {
+          var self2 = this;
+          var a = elements[self2.a].element;
+          var b = elements[self2.b].element;
+          if (self2.dragging) {
+            getOption(options, "onDragEnd", NOOP)(getSizes());
+          }
+          self2.dragging = false;
+          global[removeEventListener]("mouseup", self2.stop);
+          global[removeEventListener]("touchend", self2.stop);
+          global[removeEventListener]("touchcancel", self2.stop);
+          global[removeEventListener]("mousemove", self2.move);
+          global[removeEventListener]("touchmove", self2.move);
+          self2.stop = null;
+          self2.move = null;
+          a[removeEventListener]("selectstart", NOOP);
+          a[removeEventListener]("dragstart", NOOP);
+          b[removeEventListener]("selectstart", NOOP);
+          b[removeEventListener]("dragstart", NOOP);
+          a.style.userSelect = "";
+          a.style.webkitUserSelect = "";
+          a.style.MozUserSelect = "";
+          a.style.pointerEvents = "";
+          b.style.userSelect = "";
+          b.style.webkitUserSelect = "";
+          b.style.MozUserSelect = "";
+          b.style.pointerEvents = "";
+          self2.gutter.style.cursor = "";
+          self2.parent.style.cursor = "";
+          document2.body.style.cursor = "";
+        }
+        function startDragging(e) {
+          if ("button" in e && e.button !== 0) {
+            return;
+          }
+          var self2 = this;
+          var a = elements[self2.a].element;
+          var b = elements[self2.b].element;
+          if (!self2.dragging) {
+            getOption(options, "onDragStart", NOOP)(getSizes());
+          }
+          e.preventDefault();
+          self2.dragging = true;
+          self2.move = drag.bind(self2);
+          self2.stop = stopDragging.bind(self2);
+          global[addEventListener]("mouseup", self2.stop);
+          global[addEventListener]("touchend", self2.stop);
+          global[addEventListener]("touchcancel", self2.stop);
+          global[addEventListener]("mousemove", self2.move);
+          global[addEventListener]("touchmove", self2.move);
+          a[addEventListener]("selectstart", NOOP);
+          a[addEventListener]("dragstart", NOOP);
+          b[addEventListener]("selectstart", NOOP);
+          b[addEventListener]("dragstart", NOOP);
+          a.style.userSelect = "none";
+          a.style.webkitUserSelect = "none";
+          a.style.MozUserSelect = "none";
+          a.style.pointerEvents = "none";
+          b.style.userSelect = "none";
+          b.style.webkitUserSelect = "none";
+          b.style.MozUserSelect = "none";
+          b.style.pointerEvents = "none";
+          self2.gutter.style.cursor = cursor;
+          self2.parent.style.cursor = cursor;
+          document2.body.style.cursor = cursor;
+          calculateSizes.call(self2);
+          self2.dragOffset = getMousePosition(e) - self2.end;
+        }
+        sizes = trimToMin(sizes);
+        var pairs = [];
+        elements = ids.map(function(id, i) {
+          var element = {
+            element: elementOrSelector(id),
+            size: sizes[i],
+            minSize: minSizes[i],
+            maxSize: maxSizes[i],
+            snapOffset: snapOffsets[i],
+            i
+          };
+          var pair;
+          if (i > 0) {
+            pair = {
+              a: i - 1,
+              b: i,
+              dragging: false,
+              direction,
+              parent
+            };
+            pair[aGutterSize] = getGutterSize(
+              gutterSize,
+              i - 1 === 0,
+              false,
+              gutterAlign
+            );
+            pair[bGutterSize] = getGutterSize(
+              gutterSize,
+              false,
+              i === ids.length - 1,
+              gutterAlign
+            );
+            if (parentFlexDirection === "row-reverse" || parentFlexDirection === "column-reverse") {
+              var temp = pair.a;
+              pair.a = pair.b;
+              pair.b = temp;
+            }
+          }
+          if (i > 0) {
+            var gutterElement = gutter(i, direction, element.element);
+            setGutterSize(gutterElement, gutterSize, i);
+            pair[gutterStartDragging] = startDragging.bind(pair);
+            gutterElement[addEventListener](
+              "mousedown",
+              pair[gutterStartDragging]
+            );
+            gutterElement[addEventListener](
+              "touchstart",
+              pair[gutterStartDragging]
+            );
+            parent.insertBefore(gutterElement, element.element);
+            pair.gutter = gutterElement;
+          }
+          setElementSize(
+            element.element,
+            element.size,
+            getGutterSize(
+              gutterSize,
+              i === 0,
+              i === ids.length - 1,
+              gutterAlign
+            ),
+            i
+          );
+          if (i > 0) {
+            pairs.push(pair);
+          }
+          return element;
+        });
+        function adjustToMin(element) {
+          var isLast = element.i === pairs.length;
+          var pair = isLast ? pairs[element.i - 1] : pairs[element.i];
+          calculateSizes.call(pair);
+          var size = isLast ? pair.size - element.minSize - pair[bGutterSize] : element.minSize + pair[aGutterSize];
+          adjust.call(pair, size);
+        }
+        elements.forEach(function(element) {
+          var computedSize = element.element[getBoundingClientRect]()[dimension];
+          if (computedSize < element.minSize) {
+            if (expandToMin) {
+              adjustToMin(element);
+            } else {
+              element.minSize = computedSize;
+            }
+          }
+        });
+        function setSizes(newSizes) {
+          var trimmed = trimToMin(newSizes);
+          trimmed.forEach(function(newSize, i) {
+            if (i > 0) {
+              var pair = pairs[i - 1];
+              var a = elements[pair.a];
+              var b = elements[pair.b];
+              a.size = trimmed[i - 1];
+              b.size = newSize;
+              setElementSize(a.element, a.size, pair[aGutterSize], a.i);
+              setElementSize(b.element, b.size, pair[bGutterSize], b.i);
+            }
+          });
+        }
+        function destroy(preserveStyles, preserveGutter) {
+          pairs.forEach(function(pair) {
+            if (preserveGutter !== true) {
+              pair.parent.removeChild(pair.gutter);
+            } else {
+              pair.gutter[removeEventListener](
+                "mousedown",
+                pair[gutterStartDragging]
+              );
+              pair.gutter[removeEventListener](
+                "touchstart",
+                pair[gutterStartDragging]
+              );
+            }
+            if (preserveStyles !== true) {
+              var style = elementStyle(
+                dimension,
+                pair.a.size,
+                pair[aGutterSize]
+              );
+              Object.keys(style).forEach(function(prop) {
+                elements[pair.a].element.style[prop] = "";
+                elements[pair.b].element.style[prop] = "";
+              });
+            }
+          });
+        }
+        return {
+          setSizes,
+          getSizes,
+          collapse: function collapse(i) {
+            adjustToMin(elements[i]);
+          },
+          destroy,
+          parent,
+          pairs
+        };
+      };
+      return Split2;
+    });
+  }
+});
+
 // srcts/index.ts
 var import_loader = __toESM(require_cjs());
 
 // srcts/utils.ts
-var reload_preview = (prefix) => {
-  const iframe = document.getElementById(
-    `${prefix}-preview_frame`
-  );
-  if (iframe !== null) {
-    iframe.contentWindow.location.reload();
+var reload_preview = (prefix = "") => {
+  let class_name = "preview-frame";
+  if (prefix) {
+    class_name = `${prefix}-${class_name}`;
   }
+  const iframes = document.querySelectorAll(`.${class_name}`);
+  console.log("found iframes", iframes);
+  iframes.forEach((iframe) => {
+    if (iframe !== null && iframe instanceof HTMLIFrameElement) {
+      iframe.contentWindow.location.reload();
+    }
+  });
 };
 var send_editor_code = (label, code, prefix = "") => {
   if (prefix) {
@@ -663,11 +1154,14 @@ var send_editor_code = (label, code, prefix = "") => {
 };
 
 // srcts/index.ts
+var import_split = __toESM(require_split());
 import_loader.default.init().then((monaco) => {
   const wrapper = document.getElementById("app");
   const properties = {
     value: "# Heading 1",
-    language: "markdown"
+    language: "markdown",
+    minimap: { enabled: false },
+    automaticLayout: true
   };
   const editor = monaco.editor.create(wrapper, properties);
   document.addEventListener("keydown", (event) => {
@@ -680,12 +1174,10 @@ import_loader.default.init().then((monaco) => {
   Shiny.addCustomMessageHandler("knit", function(message) {
     send_editor_code(`quarto_code`, editor.getValue(), message.prefix);
   });
-  Shiny.addCustomMessageHandler(
-    "reload_preview",
-    (message) => {
-      reload_preview(message.prefix);
-    }
-  );
+  Shiny.addCustomMessageHandler("reload_preview", (message) => {
+    console.log("reload preview message received");
+    reload_preview();
+  });
   Shiny.addCustomMessageHandler(
     "update_code",
     function(message) {
@@ -693,3 +1185,5 @@ import_loader.default.init().then((monaco) => {
     }
   );
 });
+(0, import_split.default)(["#editor-pane", "#preview-pane"]);
+/*! Split.js - v1.6.5 */

@@ -1,4 +1,4 @@
 test_that("knit with no metadata", {
-  f <- tempfile(fileext = "qmd")
+  f <- create_qmd()
   knit("# heading 1", )
 })

@@ -7,6 +7,7 @@ specifiers:
   monaco-editor: ^0.34.0
   monaco-textmate: ^3.0.1
   onigasm: ^2.2.5
+  split.js: ^1.6.5
   typescript: ^4.7.4
 
 dependencies:
@@ -15,6 +16,7 @@ dependencies:
   monaco-editor: 0.34.0
   monaco-textmate: 3.0.1_onigasm@2.2.5
   onigasm: 2.2.5
+  split.js: 1.6.5
 
 devDependencies:
   esbuild: 0.15.5
@@ -312,6 +314,10 @@ packages:
     resolution: {integrity: sha512-F+th54mPc0l1lp1ZcFMyL/jTs2Tlq4SqIHKIXGZOR/VkHkF9A7Fr5rRr5+ZG/lWeRsyrClLYRq7s/yFQ/XhWCA==}
     dependencies:
       lru-cache: 5.1.1
+    dev: false
+
+  /split.js/1.6.5:
+    resolution: {integrity: sha512-mPTnGCiS/RiuTNsVhCm9De9cCAUsrNFFviRbADdKiiV+Kk8HKp/0fWu7Kr8pi3/yBmsqLFHuXGT9UUZ+CNLwFw==}
     dev: false
 
   /state-local/1.0.7:
