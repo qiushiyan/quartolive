@@ -9,9 +9,15 @@ Imports:
     config (>= 0.3.1),
     golem (>= 0.3.3),
     quarto,
-    shiny (>= 1.7.2)
+    shiny (>= 1.7.2),
+    styler (>= 1.7.0.9001)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.1
 URL: https://github.com/quartolive
 BugReports: https://github.com/quartolive/issues
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Remotes:  
+    r-lib/styler

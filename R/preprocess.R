@@ -7,7 +7,7 @@
 partition_input <- function(input_lines) {
   validate_front_matter <- function(delimiters) {
     if (length(delimiters) >= 2 && (delimiters[2] - delimiters[1] >
-                                    1) && grepl("^---\\s*$", input_lines[delimiters[1]])) {
+      1) && grepl("^---\\s*$", input_lines[delimiters[1]])) {
       if (delimiters[1] == 1) {
         TRUE
       } else {
@@ -26,7 +26,7 @@ partition_input <- function(input_lines) {
     input_body <- c()
     if (delimiters[1] > 1) {
       input_body <- c(input_body, input_lines[1:delimiters[1] -
-                                                1])
+        1])
     }
     if (delimiters[2] < length(input_lines)) {
       input_body <- c(input_body, input_lines[-(1:delimiters[2])])
@@ -70,7 +70,10 @@ parse_front_matter <- function(front_matter) {
 front_matter_to_text <- function(front_matter) {
   utils::capture.output({
     cat("---\n")
-    cat(yaml::as.yaml(front_matter, handlers = yml_handlers(), column.major = FALSE))
+    # only writes yaml when front_matter is not list()
+    if (length(front_matter) != 0) {
+      cat(yaml::as.yaml(front_matter, handlers = yml_handlers(), column.major = FALSE))
+    }
     cat("---\n")
   })
 }
@@ -82,7 +85,6 @@ combine_write <- function(front_matter, body, path) {
   if (fs::file_exists(path)) {
     fs::file_delete(path)
   }
-  # print(full_text)
   usethis::write_over(path, full_text, quiet = TRUE)
 
   invisible(path)
@@ -95,5 +97,9 @@ is_html <- function(header) {
 is_self_contained <- function(header) {
   is_html(header) &&
     is.list(header[["format"]][["html"]]) &&
-    !is.null("self-contained" %in% names(header[["format"]][["html"]]))
+    "self-contained" %in% names(header[["format"]][["html"]])
+}
+
+has_format <- function(header) {
+  "format" %in% names(header)
 }

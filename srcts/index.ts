@@ -12,31 +12,31 @@ loader.init().then((monaco) => {
 
   const editor = monaco.editor.create(wrapper, properties);
 
-  // editor.addAction({
-  //   id: "knit",
-  //   label: "Knit Quarto Document",
-  //   keybindings: [
-  //     monaco.KeyMod.CtrlCmd | monaco.KeyCode.Shift | monaco.KeyCode.KeyK,
-  //   ],
-  //   run: () => {
-  //     alert("Knit!");
-  //   },
-  // });
-
   document.addEventListener("keydown", (event) => {
-    // event.stopPropagation();
-    // event.preventDefault();
-
     if (event.ctrlKey && event.key == "K") {
-      send_editor_code(editor);
+      // knit
+      send_editor_code("quarto_code", editor.getValue(), "preview");
+    } else if (event.ctrlKey && event.key == "S") {
+      // format
+      send_editor_code("quarto_code_raw", editor.getValue(), "format");
     }
   });
 
-  Shiny.addCustomMessageHandler("knit", function (message: any) {
-    send_editor_code(editor);
+  Shiny.addCustomMessageHandler("knit", function (message: KnitMessage) {
+    send_editor_code(`quarto_code`, editor.getValue(), message.prefix);
   });
 
-  Shiny.addCustomMessageHandler("refresh_preview", (message: any) => {
-    reload_preview();
-  });
+  Shiny.addCustomMessageHandler(
+    "reload_preview",
+    (message: RefreshPreviewMessage) => {
+      reload_preview(message.prefix);
+    }
+  );
+
+  Shiny.addCustomMessageHandler(
+    "update_code",
+    function (message: UpdateCodeMessage) {
+      editor.getModel()!.setValue(message.code);
+    }
+  );
 });

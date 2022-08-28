@@ -647,14 +647,19 @@ var require_cjs = __commonJS({
 var import_loader = __toESM(require_cjs());
 
 // srcts/utils.ts
-var reload_preview = () => {
-  const iframe = document.getElementById("preview_frame");
+var reload_preview = (prefix) => {
+  const iframe = document.getElementById(
+    `${prefix}-preview_frame`
+  );
   if (iframe !== null) {
     iframe.contentWindow.location.reload();
   }
 };
-var send_editor_code = (editor) => {
-  Shiny.setInputValue("quarto_code", editor.getValue());
+var send_editor_code = (label, code, prefix = "") => {
+  if (prefix) {
+    label = `${prefix}-${label}`;
+  }
+  Shiny.setInputValue(label, code);
 };
 
 // srcts/index.ts
@@ -667,13 +672,24 @@ import_loader.default.init().then((monaco) => {
   const editor = monaco.editor.create(wrapper, properties);
   document.addEventListener("keydown", (event) => {
     if (event.ctrlKey && event.key == "K") {
-      send_editor_code(editor);
+      send_editor_code("quarto_code", editor.getValue(), "preview");
+    } else if (event.ctrlKey && event.key == "S") {
+      send_editor_code("quarto_code_raw", editor.getValue(), "format");
     }
   });
   Shiny.addCustomMessageHandler("knit", function(message) {
-    send_editor_code(editor);
+    send_editor_code(`quarto_code`, editor.getValue(), message.prefix);
   });
-  Shiny.addCustomMessageHandler("refresh_preview", (message) => {
-    reload_preview();
-  });
+  Shiny.addCustomMessageHandler(
+    "reload_preview",
+    (message) => {
+      reload_preview(message.prefix);
+    }
+  );
+  Shiny.addCustomMessageHandler(
+    "update_code",
+    function(message) {
+      editor.getModel().setValue(message.code);
+    }
+  );
 });

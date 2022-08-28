@@ -11,14 +11,13 @@ app_ui <- function(request) {
       # theme = bslib::bs_theme(version = 5),
       fluidRow(
         h1("quartolive"),
-        actionButton("knit", "Knit"),
         HTML("&nbsp"),
       ),
       col_6(
-        div(id = "app"),
+        mod_editor_ui("editor")
       ),
       col_6(
-        uiOutput("out")
+        mod_preview_ui("preview")
       )
     )
   )
