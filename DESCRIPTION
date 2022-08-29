@@ -2,7 +2,7 @@ Package: quartolive
 Title: Quarto Editor in Shiny
 Version: 0.0.0.9000
 Authors@R: person('Qiushi', 'Yan', email = 'qiushi.yann@gmail.com', role = c('cre', 'aut'))
-Description: The quartolive contains a shiny app for writing and rendering quarto documents.
+Description: This package implements a Quarto editor in Shiny.
 License: MIT + file LICENSE
 Imports:
     bslib,

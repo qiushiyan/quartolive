@@ -17,12 +17,11 @@ mod_preview_ui <- function(id) {
 #' preview Server Functions
 #'
 #' @noRd
-mod_preview_server <- function(id) {
+mod_preview_server <- function(id, global_rv) {
   w <- waiter::Waiter$new(id = "preview-pane")
 
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    rv <- reactiveValues(error = NULL, output_formats = NULL)
 
     observeEvent(input$quarto_code, {
       w$show()
@@ -30,64 +29,85 @@ mod_preview_server <- function(id) {
 
       code <- unlist(strsplit(input$quarto_code, "\n"))
       quarto_data <- partition_input(code)
-      header <- parse_front_matter(quarto_data$front_matter)
-      body <- quarto_data$body
+      header <- try(parse_front_matter(quarto_data$front_matter), silent = TRUE)
+      if (inherits(header, "try-error")) {
+        global_rv$error <- invalid_yaml_msg
+      } else {
+        body <- quarto_data$body
+        # a named vector where names are output formats, values are file exts
+        output_exts <- get_output_exts(header)
+        output_formats <- names(output_exts)
 
-      # a named vector where names are quarto output formats, values are file exts
-      print(header)
-      output_formats <- get_output_formats(header)
-      formats_unsupported <- is_null(output_formats)
-      if (!all(formats_unsupported)) {
-        output_formats <- output_formats[!formats_unsupported]
-        if (length(output_formats) == 1) {
-          # only one output format
-          rv$output_formats <- output_formats[1L]
-          msg <- knit_one(header, body, output_format = rv$output_formats)
-          if (!is.null(msg)) {
-            rv$error <- msg
+        supported_exts <- !is_null(output_exts)
+        if (any(supported_exts)) {
+          output_exts <- output_exts[supported_exts]
+          output_formats <- output_formats[supported_exts]
+          if (length(output_exts) == 1) {
+            # only one output format
+            results <- knit_one(header, body, output_formats, output_exts)
+            if (results$error) {
+              global_rv$error <- results[["res"]]
+            } else {
+              global_rv$error <- NULL
+              global_rv$output_paths <- results[["res"]]
+            }
           } else {
-            rv$error <- NULL
+            # multiple formats
+            # res is in the format
+            #  list(error = c(TRUE, FALSE), res = c("error message", "output path))
+            results <- furrr::future_map2(
+              output_formats,
+              output_exts,
+              ~ knit_one(header, body, output_format = .x, ext = .y)
+            ) |>
+              purrr::transpose() |>
+              purrr::map(unlist)
+
+            error_index <- results[["error"]]
+            msgs <- results[["res"]][error_index]
+            output_paths <- results[["res"]][!error_index]
+            if (length(output_paths) > 0) {
+              names(output_paths) <- output_formats[!error_index]
+            }
+
+            if (all(error_index)) {
+              global_rv$error <- msgs
+            } else {
+              global_rv$output_paths <- output_paths
+              if (length(msgs) == 0) {
+                global_rv$error <- NULL
+              } else {
+                global_rv$error <- msgs
+              }
+            }
           }
         } else {
-          # multiple formats
-          rv$output_formats <- output_formats
-          print(output_formats)
-          msgs <- furrr::future_map(
-            output_formats,
-            ~ knit_one(header, body, .)
-          ) |> unlist()
-
-          empty_msgs <- is_null(msgs)
-          if (!all(empty_msgs)) {
-            rv$error <- paste(msgs[!empty_msgs], collapse = "\n")
-          } else {
-            rv$error <- NULL
-          }
+          global_rv$error <- no_supported_msg(names(output_exts))
         }
-      } else {
-        rv$error <- "no supported format found, see https://quarto.org/docs/output-formats/all-formats.html"
-      }
 
-      golem::invoke_js("reload_preview", list())
-    })
-
-    observeEvent(rv$error, {
-      if (!is.null(rv$error)) {
-        notify(rv$error, type = "error", duration = 5, closeButton = TRUE)
+        golem::invoke_js("reload_preview", list())
       }
     })
+
 
     output$out <- renderUI({
-      if (length(rv$output_formats) == 1) {
-        preview_frame(rv$output_formats)
+      if (is.null(global_rv$output_paths)) {
+        p("preview here")
       } else {
-        do.call(
-          tabsetPanel,
-          purrr::map(
-            unname(rv$output_formats),
-            ~ tabPanel(., preview_frame(.))
+        if (length(global_rv$output_paths) == 1) {
+          preview_frame(global_rv$output_paths)
+        } else {
+          titles <- names(global_rv$output_paths)
+          output_paths <- unname(global_rv$output_paths)
+          do.call(
+            tabsetPanel,
+            purrr::map2(
+              titles,
+              output_paths,
+              ~ tabPanel(.x, preview_frame(.y))
+            )
           )
-        )
+        }
       }
     })
   })

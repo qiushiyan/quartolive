@@ -5,3 +5,8 @@ interface KnitMessage {
 interface UpdateCodeMessage {
   code: string;
 }
+
+interface ShowModalMessage {
+  title: string;
+  body: string;
+}

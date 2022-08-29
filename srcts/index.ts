@@ -3,7 +3,7 @@ import { reload_preview, send_editor_code } from "./utils";
 import Split from "split.js";
 
 loader.init().then((monaco) => {
-  const wrapper = document.getElementById("app")!;
+  const wrapper = document.getElementById("quarto-editor")!;
   // monaco.languages.register({ id: "quarto" });
 
   const properties = {
@@ -30,7 +30,6 @@ loader.init().then((monaco) => {
   });
 
   Shiny.addCustomMessageHandler("reload_preview", (message: any) => {
-    console.log("reload preview message received");
     reload_preview();
   });
 

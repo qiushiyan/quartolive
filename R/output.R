@@ -1,7 +1,6 @@
-get_output_formats <- function(header) {
+get_output_exts <- function(header) {
   empty_header <- length(header) == 0
-  no_format <- !"format" %in% names(header)
-  if (empty_header || no_format) {
+  if (empty_header || !has_format(header)) {
     return(c("html" = "html"))
   }
 
@@ -19,10 +18,6 @@ output_format_to_ext <- function(output_format) {
 }
 
 
-get_output_file <- function(input_file, output_format) {
-  if (output_format %in% c("html", "pdf")) {
-    with_ext(input_file, output_format)
-  } else {
-    xfun::with_ext(input_file, output_format)
-  }
+get_output_file <- function(input_file, ext) {
+  with_ext(input_file, ext)
 }

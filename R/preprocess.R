@@ -44,6 +44,7 @@ validate_front_matter <- function(front_matter) {
   }
 }
 
+
 # part of rmarkdown:::parse_yaml_front_matter
 parse_front_matter <- function(front_matter) {
   if (!is.null(front_matter)) {
@@ -90,15 +91,33 @@ combine_write <- function(front_matter, body, path) {
   invisible(path)
 }
 
-is_html <- function(header) {
-  "html" %in% names(header[["format"]])
-}
-
-is_self_contained <- function(header) {
-  is.list(header[["format"]][["html"]]) &&
-    "self-contained" %in% names(header[["format"]][["html"]])
+has_prop <- function(x, prop) {
+  prop %in% names(x)
 }
 
 has_format <- function(header) {
-  "format" %in% names(header)
+  has_prop(header, "format")
+}
+
+is_format <- function(header, output_format) {
+  has_prop(header[["format"]], output_format)
+}
+
+is_embed_resources <- function(header, output_format) {
+  if (length(header) == 0) {
+    return(FALSE)
+  }
+
+  if (has_prop(header, "embed-resources") || has_prop(header, "self-contained")) {
+    return(TRUE)
+  }
+
+  if (!is.list(header[["format"]])) {
+    return(FALSE)
+  }
+
+  format_spec <- header[["format"]][[output_format]]
+
+
+  is.list(format_spec) && grepl("self-contained|embed-resources", names(format_spec))
 }

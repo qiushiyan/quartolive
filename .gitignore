@@ -4,3 +4,5 @@
 .httr-oauth
 .DS_Store
 node_modules
+inst/app/www/*.pdf
+inst/app/www/*.html

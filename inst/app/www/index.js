@@ -1139,7 +1139,6 @@ var reload_preview = (prefix = "") => {
     class_name = `${prefix}-${class_name}`;
   }
   const iframes = document.querySelectorAll(`.${class_name}`);
-  console.log("found iframes", iframes);
   iframes.forEach((iframe) => {
     if (iframe !== null && iframe instanceof HTMLIFrameElement) {
       iframe.contentWindow.location.reload();
@@ -1156,7 +1155,7 @@ var send_editor_code = (label, code, prefix = "") => {
 // srcts/index.ts
 var import_split = __toESM(require_split());
 import_loader.default.init().then((monaco) => {
-  const wrapper = document.getElementById("app");
+  const wrapper = document.getElementById("quarto-editor");
   const properties = {
     value: "# Heading 1",
     language: "markdown",
@@ -1175,7 +1174,6 @@ import_loader.default.init().then((monaco) => {
     send_editor_code(`quarto_code`, editor.getValue(), message.prefix);
   });
   Shiny.addCustomMessageHandler("reload_preview", (message) => {
-    console.log("reload preview message received");
     reload_preview();
   });
   Shiny.addCustomMessageHandler(

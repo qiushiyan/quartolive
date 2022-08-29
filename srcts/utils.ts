@@ -4,7 +4,6 @@ export const reload_preview = (prefix: string = "") => {
     class_name = `${prefix}-${class_name}`;
   }
   const iframes = document.querySelectorAll(`.${class_name}`);
-  console.log("found iframes", iframes);
   iframes.forEach((iframe) => {
     if (iframe !== null && iframe instanceof HTMLIFrameElement) {
       iframe.contentWindow!.location.reload();

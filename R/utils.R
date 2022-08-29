@@ -85,14 +85,3 @@ with_ext <- function(x, ext) {
   }
   mapply(sub, r, ext, x, USE.NAMES = FALSE)
 }
-
-notify <- function(msg, id = NULL, type = "message", duration = NULL, closeButton = FALSE, ...) {
-  showNotification(msg, id = id, duration = duration, closeButton = closeButton, type = type, ...)
-}
-
-preview_frame <- function(output_format) {
-  tags$iframe(
-    src = with_ext("./www/output", output_format),
-    class = "preview-frame"
-  )
-}
