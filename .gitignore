@@ -6,3 +6,4 @@
 node_modules
 inst/app/www/*.pdf
 inst/app/www/*.html
+.env
