@@ -40,7 +40,9 @@ partition_input <- function(input_lines) {
 validate_front_matter <- function(front_matter) {
   front_matter <- sub("\\s+$", "", front_matter)
   if (grepl(":$", front_matter)) {
-    stop("Invalid YAML front matter (ends with ':')")
+    FALSE
+  } else {
+    TRUE
   }
 }
 
@@ -51,7 +53,9 @@ parse_front_matter <- function(front_matter) {
     if (length(front_matter) > 2) {
       front_matter <- front_matter[2:(length(front_matter) - 1)]
       front_matter <- paste(front_matter, collapse = "\n")
-      validate_front_matter(front_matter)
+      if (!validate_front_matter(front_matter)) {
+        return(structure(front_matter, class = "try-error"))
+      }
       parsed_yaml <- yaml_load(front_matter)
       if (is.list(parsed_yaml)) {
         parsed_yaml

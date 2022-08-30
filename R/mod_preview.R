@@ -29,9 +29,9 @@ mod_preview_server <- function(id, global_rv) {
 
       code <- unlist(strsplit(input$quarto_code, "\n"))
       quarto_data <- partition_input(code)
-      header <- try(parse_front_matter(quarto_data$front_matter), silent = TRUE)
+      header <- parse_front_matter(quarto_data$front_matter)
       if (inherits(header, "try-error")) {
-        global_rv$error <- invalid_yaml_msg
+        global_rv$error <- invalid_yaml_msg(header)
       } else {
         body <- quarto_data$body
         # a named vector where names are output formats, values are file exts
@@ -46,7 +46,7 @@ mod_preview_server <- function(id, global_rv) {
             # only one output format
             results <- knit_one(header, body, output_formats, output_exts)
             if (results$error) {
-              global_rv$error <- results[["res"]]
+              global_rv$error <- knit_error_msg(results[["res"]])
             } else {
               global_rv$error <- NULL
               global_rv$output_paths <- results[["res"]]
@@ -69,15 +69,17 @@ mod_preview_server <- function(id, global_rv) {
             if (length(output_paths) > 0) {
               names(output_paths) <- output_formats[!error_index]
             }
-
+            if (length(msgs) > 0) {
+              names(msgs) <- output_formats[error_index]
+            }
             if (all(error_index)) {
-              global_rv$error <- msgs
+              global_rv$error <- knit_error_msg(msgs)
             } else {
               global_rv$output_paths <- output_paths
               if (length(msgs) == 0) {
                 global_rv$error <- NULL
               } else {
-                global_rv$error <- msgs
+                global_rv$error <- knit_error_msg(msgs)
               }
             }
           }

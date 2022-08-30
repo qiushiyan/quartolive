@@ -1,20 +1,57 @@
 import loader from "@monaco-editor/loader";
 import { reload_preview, send_editor_code } from "./utils";
 import Split from "split.js";
+import { createChunkProposals } from "./snippets/insertChunk";
+import { insertChunk } from "./actions/insertChunk";
 
 loader.init().then((monaco) => {
   const wrapper = document.getElementById("quarto-editor")!;
-  // monaco.languages.register({ id: "quarto" });
+
+  monaco.languages.register({ id: "quarto" });
 
   const properties = {
-    value: "# Heading 1",
-    language: "markdown",
+    language: "quarto",
     minimap: { enabled: false },
     automaticLayout: true,
+    value: getInitialCode(),
   };
 
   const editor = monaco.editor.create(wrapper, properties);
 
+  // snippets
+  monaco.languages.registerCompletionItemProvider("quarto", {
+    provideCompletionItems: function (model, position) {
+      var word = model.getWordUntilPosition(position);
+      var range = {
+        startLineNumber: position.lineNumber,
+        endLineNumber: position.lineNumber,
+        startColumn: word.startColumn,
+        endColumn: word.endColumn,
+      };
+      return {
+        suggestions: createChunkProposals(range),
+      };
+    },
+  });
+
+  // shortcuts
+
+  editor.addCommand(
+    monaco.KeyMod.CtrlCmd | monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyI,
+    () => insertChunk(editor, "r")
+  );
+
+  editor.addCommand(
+    monaco.KeyMod.CtrlCmd | monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyP,
+    () => insertChunk(editor, "python")
+  );
+
+  editor.addCommand(
+    monaco.KeyMod.CtrlCmd | monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyJ,
+    () => insertChunk(editor, "julia")
+  );
+
+  // interaction with shiny
   document.addEventListener("keydown", (event) => {
     if (event.ctrlKey && event.key == "K") {
       // knit
@@ -42,3 +79,25 @@ loader.init().then((monaco) => {
 });
 
 Split(["#editor-pane", "#preview-pane"]);
+
+function getInitialCode() {
+  return [
+    "---",
+    "title: 'Using Quarto'",
+    "---",
+    " ",
+    "Using R",
+    " ",
+    "```{r}",
+    "#| layout-ncol: 2",
+    "plot(cars)",
+    "plot(mtcars)",
+    "```",
+    " ",
+    "Using Python",
+    " ",
+    "```{python}",
+    "import this",
+    "```",
+  ].join("\n");
+}

@@ -20,17 +20,10 @@ app_server <- function(input, output, session) {
 
   observeEvent(rv$error, {
     if (!is.null(rv$error)) {
-      if (length(rv$error) == 1) {
-        showModal(modal(
-          title = "Quarto failed rendering with error",
-          rv$error
-        ))
-      } else {
-        showModal(modal(
-          title = "Quarto failed rendering with error",
-          named_to_li(rv$error)
-        ))
-      }
+      showModal(modal(
+        title = "Quarto failed rendering with error",
+        rv$error
+      ))
     }
   })
 }
