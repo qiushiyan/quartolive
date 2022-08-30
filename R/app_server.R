@@ -21,6 +21,7 @@ app_server <- function(input, output, session) {
 
   observeEvent(rv$error, {
     if (!is.null(rv$error)) {
+      golem::invoke_js("error", list())
       showModal(modal(
         title = "Quarto failed rendering with error",
         rv$error

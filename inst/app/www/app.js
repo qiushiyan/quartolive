@@ -1,4 +1,4 @@
-$(document).on("shiny:busy", function (event) {
+const showSpinner = () => {
   const preview_out = document.getElementById("preview-out");
   const overlay = document.getElementById("overlay");
   if (preview_out) {
@@ -8,9 +8,9 @@ $(document).on("shiny:busy", function (event) {
   if (overlay) {
     overlay.style.display = "flex";
   }
-});
+};
 
-$(document).on("shiny:value", function (event) {
+const hideSpinner = () => {
   const preview_out = document.getElementById("preview-out");
   const overlay = document.getElementById("overlay");
 
@@ -21,4 +21,17 @@ $(document).on("shiny:value", function (event) {
   if (overlay) {
     overlay.style.display = "none";
   }
+};
+
+$(document).on("shiny:busy", function (event) {
+  showSpinner();
+});
+
+$(document).on("shiny:value", function (event) {
+  hideSpinner();
+});
+
+Shiny.addCustomMessageHandler("error", function (message) {
+  console.log("error happened");
+  hideSpinner();
 });
