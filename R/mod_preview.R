@@ -24,12 +24,18 @@ mod_preview_server <- function(id, global_rv) {
     ns <- session$ns
 
     observeEvent(input$quarto_code, {
+      print("showing screen")
       w$show()
       on.exit(w$hide())
 
       code <- unlist(strsplit(input$quarto_code, "\n"))
       quarto_data <- partition_input(code)
       header <- parse_front_matter(quarto_data$front_matter)
+
+      if (!has_prop(header, "format")) {
+        notify(no_format_msg)
+      }
+
       if (inherits(header, "try-error")) {
         global_rv$error <- invalid_yaml_msg(header)
       } else {

@@ -1628,19 +1628,19 @@ _defaultConfig.unshift({
   windowSize: 15,
   timeBudget: 150
 });
-function getWordAtText(column, wordDefinition, text3, textOffset, config) {
+function getWordAtText(column, wordDefinition, text2, textOffset, config) {
   if (!config) {
     config = Iterable.first(_defaultConfig);
   }
-  if (text3.length > config.maxLen) {
+  if (text2.length > config.maxLen) {
     let start = column - config.maxLen / 2;
     if (start < 0) {
       start = 0;
     } else {
       textOffset += start;
     }
-    text3 = text3.substring(start, column + config.maxLen / 2);
-    return getWordAtText(column, wordDefinition, text3, textOffset, config);
+    text2 = text2.substring(start, column + config.maxLen / 2);
+    return getWordAtText(column, wordDefinition, text2, textOffset, config);
   }
   const t1 = Date.now();
   const pos = column - 1 - textOffset;
@@ -1652,7 +1652,7 @@ function getWordAtText(column, wordDefinition, text3, textOffset, config) {
     }
     const regexIndex = pos - config.windowSize * i;
     wordDefinition.lastIndex = Math.max(0, regexIndex);
-    const thisMatch = _findRegexMatchEnclosingPosition(wordDefinition, text3, pos, prevRegexIndex);
+    const thisMatch = _findRegexMatchEnclosingPosition(wordDefinition, text2, pos, prevRegexIndex);
     if (!thisMatch && match2) {
       break;
     }
@@ -1673,9 +1673,9 @@ function getWordAtText(column, wordDefinition, text3, textOffset, config) {
   }
   return null;
 }
-function _findRegexMatchEnclosingPosition(wordDefinition, text3, pos, stopPos) {
+function _findRegexMatchEnclosingPosition(wordDefinition, text2, pos, stopPos) {
   let match2;
-  while (match2 = wordDefinition.exec(text3)) {
+  while (match2 = wordDefinition.exec(text2)) {
     const matchIndex = match2.index || 0;
     if (matchIndex <= pos && wordDefinition.lastIndex >= pos) {
       return match2;
@@ -8022,11 +8022,11 @@ var Selection = class extends Range {
 };
 
 // node_modules/.pnpm/monaco-editor@0.34.0/node_modules/monaco-editor/esm/vs/base/common/codicons.js
-function getCodiconAriaLabel(text3) {
-  if (!text3) {
+function getCodiconAriaLabel(text2) {
+  if (!text2) {
     return "";
   }
-  return text3.replace(/\$\((.*?)\)/g, (_match, codiconName) => ` ${codiconName} `).trim();
+  return text2.replace(/\$\((.*?)\)/g, (_match, codiconName) => ` ${codiconName} `).trim();
 }
 var Codicon = class {
   constructor(id, definition, description) {
@@ -11172,10 +11172,10 @@ function isITextSnapshot(obj) {
   return obj && typeof obj.read === "function";
 }
 var ValidAnnotatedEditOperation = class {
-  constructor(identifier, range2, text3, forceMoveMarkers, isAutoWhitespaceEdit, _isTracked) {
+  constructor(identifier, range2, text2, forceMoveMarkers, isAutoWhitespaceEdit, _isTracked) {
     this.identifier = identifier;
     this.range = range2;
-    this.text = text3;
+    this.text = text2;
     this.forceMoveMarkers = forceMoveMarkers;
     this.isAutoWhitespaceEdit = isAutoWhitespaceEdit;
     this._isTracked = _isTracked;
@@ -11578,11 +11578,11 @@ var RichEditBracket = class {
     this._openSet = RichEditBracket._toSet(this.open);
     this._closeSet = RichEditBracket._toSet(this.close);
   }
-  isOpen(text3) {
-    return this._openSet.has(text3);
+  isOpen(text2) {
+    return this._openSet.has(text2);
   }
-  isClose(text3) {
-    return this._closeSet.has(text3);
+  isClose(text2) {
+    return this._closeSet.has(text2);
   }
   static _toSet(arr) {
     const result = /* @__PURE__ */ new Set();
@@ -11807,8 +11807,8 @@ var BracketsUtils = class {
     const reversedSubstr = reversedLineText.substring(lineText.length - endOffset, lineText.length - startOffset);
     return this._findPrevBracketInText(reversedBracketRegex, lineNumber, reversedSubstr, startOffset);
   }
-  static findNextBracketInText(bracketRegex, lineNumber, text3, offset) {
-    const m = text3.match(bracketRegex);
+  static findNextBracketInText(bracketRegex, lineNumber, text2, offset) {
+    const m = text2.match(bracketRegex);
     if (!m) {
       return null;
     }
@@ -11852,12 +11852,12 @@ var BracketElectricCharacterSupport = class {
       return null;
     }
     const reversedBracketRegex = this._richEditBrackets.reversedRegex;
-    const text3 = context.getLineContent().substring(0, column - 1) + character;
-    const r = BracketsUtils.findPrevBracketInRange(reversedBracketRegex, 1, text3, 0, text3.length);
+    const text2 = context.getLineContent().substring(0, column - 1) + character;
+    const r = BracketsUtils.findPrevBracketInRange(reversedBracketRegex, 1, text2, 0, text2.length);
     if (!r) {
       return null;
     }
-    const bracketText = text3.substring(r.startColumn - 1, r.endColumn - 1).toLowerCase();
+    const bracketText = text2.substring(r.startColumn - 1, r.endColumn - 1).toLowerCase();
     const isOpen = this._richEditBrackets.textIsOpenBracket[bracketText];
     if (isOpen) {
       return null;
@@ -11883,44 +11883,44 @@ var IndentRulesSupport = class {
   constructor(indentationRules) {
     this._indentationRules = indentationRules;
   }
-  shouldIncrease(text3) {
+  shouldIncrease(text2) {
     if (this._indentationRules) {
-      if (this._indentationRules.increaseIndentPattern && resetGlobalRegex(this._indentationRules.increaseIndentPattern) && this._indentationRules.increaseIndentPattern.test(text3)) {
+      if (this._indentationRules.increaseIndentPattern && resetGlobalRegex(this._indentationRules.increaseIndentPattern) && this._indentationRules.increaseIndentPattern.test(text2)) {
         return true;
       }
     }
     return false;
   }
-  shouldDecrease(text3) {
-    if (this._indentationRules && this._indentationRules.decreaseIndentPattern && resetGlobalRegex(this._indentationRules.decreaseIndentPattern) && this._indentationRules.decreaseIndentPattern.test(text3)) {
+  shouldDecrease(text2) {
+    if (this._indentationRules && this._indentationRules.decreaseIndentPattern && resetGlobalRegex(this._indentationRules.decreaseIndentPattern) && this._indentationRules.decreaseIndentPattern.test(text2)) {
       return true;
     }
     return false;
   }
-  shouldIndentNextLine(text3) {
-    if (this._indentationRules && this._indentationRules.indentNextLinePattern && resetGlobalRegex(this._indentationRules.indentNextLinePattern) && this._indentationRules.indentNextLinePattern.test(text3)) {
+  shouldIndentNextLine(text2) {
+    if (this._indentationRules && this._indentationRules.indentNextLinePattern && resetGlobalRegex(this._indentationRules.indentNextLinePattern) && this._indentationRules.indentNextLinePattern.test(text2)) {
       return true;
     }
     return false;
   }
-  shouldIgnore(text3) {
-    if (this._indentationRules && this._indentationRules.unIndentedLinePattern && resetGlobalRegex(this._indentationRules.unIndentedLinePattern) && this._indentationRules.unIndentedLinePattern.test(text3)) {
+  shouldIgnore(text2) {
+    if (this._indentationRules && this._indentationRules.unIndentedLinePattern && resetGlobalRegex(this._indentationRules.unIndentedLinePattern) && this._indentationRules.unIndentedLinePattern.test(text2)) {
       return true;
     }
     return false;
   }
-  getIndentMetadata(text3) {
+  getIndentMetadata(text2) {
     let ret = 0;
-    if (this.shouldIncrease(text3)) {
+    if (this.shouldIncrease(text2)) {
       ret += 1;
     }
-    if (this.shouldDecrease(text3)) {
+    if (this.shouldDecrease(text2)) {
       ret += 2;
     }
-    if (this.shouldIndentNextLine(text3)) {
+    if (this.shouldIndentNextLine(text2)) {
       ret += 4;
     }
-    if (this.shouldIgnore(text3)) {
+    if (this.shouldIgnore(text2)) {
       ret += 8;
     }
     return ret;
@@ -15838,7 +15838,7 @@ var BasicInplaceReplace = class {
       ["public", "protected", "private"]
     ];
   }
-  navigateValueSet(range1, text1, range2, text22, up) {
+  navigateValueSet(range1, text1, range2, text2, up) {
     if (range1 && text1) {
       const result = this.doNavigateValueSet(text1, up);
       if (result) {
@@ -15848,8 +15848,8 @@ var BasicInplaceReplace = class {
         };
       }
     }
-    if (range2 && text22) {
-      const result = this.doNavigateValueSet(text22, up);
+    if (range2 && text2) {
+      const result = this.doNavigateValueSet(text2, up);
       if (result) {
         return {
           range: range2,
@@ -15859,12 +15859,12 @@ var BasicInplaceReplace = class {
     }
     return null;
   }
-  doNavigateValueSet(text3, up) {
-    const numberResult = this.numberReplace(text3, up);
+  doNavigateValueSet(text2, up) {
+    const numberResult = this.numberReplace(text2, up);
     if (numberResult !== null) {
       return numberResult;
     }
-    return this.textReplace(text3, up);
+    return this.textReplace(text2, up);
   }
   numberReplace(value, up) {
     const precision = Math.pow(10, value.length - (value.lastIndexOf(".") + 1));
@@ -16003,11 +16003,11 @@ function createFindMatch(range2, rawMatches, captureMatches) {
   return new FindMatch(range2, matches);
 }
 var LineFeedCounter = class {
-  constructor(text3) {
+  constructor(text2) {
     const lineFeedsOffsets = [];
     let lineFeedsOffsetsLen = 0;
-    for (let i = 0, textLen = text3.length; i < textLen; i++) {
-      if (text3.charCodeAt(i) === 10) {
+    for (let i = 0, textLen = text2.length; i < textLen; i++) {
+      if (text2.charCodeAt(i) === 10) {
         lineFeedsOffsets[lineFeedsOffsetsLen++] = i;
       }
     }
@@ -16050,7 +16050,7 @@ var TextModelSearch = class {
     }
     return this._doFindMatchesLineByLine(model, searchRange, searchData, captureMatches, limitResultCount);
   }
-  static _getMultilineMatchRange(model, deltaOffset, text3, lfCounter, matchIndex, match0) {
+  static _getMultilineMatchRange(model, deltaOffset, text2, lfCounter, matchIndex, match0) {
     let startOffset;
     let lineFeedCountBeforeMatch = 0;
     if (lfCounter) {
@@ -16073,14 +16073,14 @@ var TextModelSearch = class {
   }
   static _doFindMatchesMultiline(model, searchRange, searcher, captureMatches, limitResultCount) {
     const deltaOffset = model.getOffsetAt(searchRange.getStartPosition());
-    const text3 = model.getValueInRange(searchRange, 1);
-    const lfCounter = model.getEOL() === "\r\n" ? new LineFeedCounter(text3) : null;
+    const text2 = model.getValueInRange(searchRange, 1);
+    const lfCounter = model.getEOL() === "\r\n" ? new LineFeedCounter(text2) : null;
     const result = [];
     let counter = 0;
     let m;
     searcher.reset(0);
-    while (m = searcher.next(text3)) {
-      result[counter++] = createFindMatch(this._getMultilineMatchRange(model, deltaOffset, text3, lfCounter, m.index, m[0]), m, captureMatches);
+    while (m = searcher.next(text2)) {
+      result[counter++] = createFindMatch(this._getMultilineMatchRange(model, deltaOffset, text2, lfCounter, m.index, m[0]), m, captureMatches);
       if (counter >= limitResultCount) {
         return result;
       }
@@ -16091,30 +16091,30 @@ var TextModelSearch = class {
     const result = [];
     let resultLen = 0;
     if (searchRange.startLineNumber === searchRange.endLineNumber) {
-      const text4 = model.getLineContent(searchRange.startLineNumber).substring(searchRange.startColumn - 1, searchRange.endColumn - 1);
-      resultLen = this._findMatchesInLine(searchData, text4, searchRange.startLineNumber, searchRange.startColumn - 1, resultLen, result, captureMatches, limitResultCount);
+      const text3 = model.getLineContent(searchRange.startLineNumber).substring(searchRange.startColumn - 1, searchRange.endColumn - 1);
+      resultLen = this._findMatchesInLine(searchData, text3, searchRange.startLineNumber, searchRange.startColumn - 1, resultLen, result, captureMatches, limitResultCount);
       return result;
     }
-    const text3 = model.getLineContent(searchRange.startLineNumber).substring(searchRange.startColumn - 1);
-    resultLen = this._findMatchesInLine(searchData, text3, searchRange.startLineNumber, searchRange.startColumn - 1, resultLen, result, captureMatches, limitResultCount);
+    const text2 = model.getLineContent(searchRange.startLineNumber).substring(searchRange.startColumn - 1);
+    resultLen = this._findMatchesInLine(searchData, text2, searchRange.startLineNumber, searchRange.startColumn - 1, resultLen, result, captureMatches, limitResultCount);
     for (let lineNumber = searchRange.startLineNumber + 1; lineNumber < searchRange.endLineNumber && resultLen < limitResultCount; lineNumber++) {
       resultLen = this._findMatchesInLine(searchData, model.getLineContent(lineNumber), lineNumber, 0, resultLen, result, captureMatches, limitResultCount);
     }
     if (resultLen < limitResultCount) {
-      const text4 = model.getLineContent(searchRange.endLineNumber).substring(0, searchRange.endColumn - 1);
-      resultLen = this._findMatchesInLine(searchData, text4, searchRange.endLineNumber, 0, resultLen, result, captureMatches, limitResultCount);
+      const text3 = model.getLineContent(searchRange.endLineNumber).substring(0, searchRange.endColumn - 1);
+      resultLen = this._findMatchesInLine(searchData, text3, searchRange.endLineNumber, 0, resultLen, result, captureMatches, limitResultCount);
     }
     return result;
   }
-  static _findMatchesInLine(searchData, text3, lineNumber, deltaOffset, resultLen, result, captureMatches, limitResultCount) {
+  static _findMatchesInLine(searchData, text2, lineNumber, deltaOffset, resultLen, result, captureMatches, limitResultCount) {
     const wordSeparators2 = searchData.wordSeparators;
     if (!captureMatches && searchData.simpleSearch) {
       const searchString = searchData.simpleSearch;
       const searchStringLen = searchString.length;
-      const textLength = text3.length;
+      const textLength = text2.length;
       let lastMatchIndex = -searchStringLen;
-      while ((lastMatchIndex = text3.indexOf(searchString, lastMatchIndex + searchStringLen)) !== -1) {
-        if (!wordSeparators2 || isValidMatch(wordSeparators2, text3, textLength, lastMatchIndex, searchStringLen)) {
+      while ((lastMatchIndex = text2.indexOf(searchString, lastMatchIndex + searchStringLen)) !== -1) {
+        if (!wordSeparators2 || isValidMatch(wordSeparators2, text2, textLength, lastMatchIndex, searchStringLen)) {
           result[resultLen++] = new FindMatch(new Range(lineNumber, lastMatchIndex + 1 + deltaOffset, lineNumber, lastMatchIndex + 1 + searchStringLen + deltaOffset), null);
           if (resultLen >= limitResultCount) {
             return resultLen;
@@ -16127,7 +16127,7 @@ var TextModelSearch = class {
     let m;
     searcher.reset(0);
     do {
-      m = searcher.next(text3);
+      m = searcher.next(text2);
       if (m) {
         result[resultLen++] = createFindMatch(new Range(lineNumber, m.index + 1 + deltaOffset, lineNumber, m.index + 1 + m[0].length + deltaOffset), m, captureMatches);
         if (resultLen >= limitResultCount) {
@@ -16152,12 +16152,12 @@ var TextModelSearch = class {
     const searchTextStart = new Position(searchStart.lineNumber, 1);
     const deltaOffset = model.getOffsetAt(searchTextStart);
     const lineCount = model.getLineCount();
-    const text3 = model.getValueInRange(new Range(searchTextStart.lineNumber, searchTextStart.column, lineCount, model.getLineMaxColumn(lineCount)), 1);
-    const lfCounter = model.getEOL() === "\r\n" ? new LineFeedCounter(text3) : null;
+    const text2 = model.getValueInRange(new Range(searchTextStart.lineNumber, searchTextStart.column, lineCount, model.getLineMaxColumn(lineCount)), 1);
+    const lfCounter = model.getEOL() === "\r\n" ? new LineFeedCounter(text2) : null;
     searcher.reset(searchStart.column - 1);
-    const m = searcher.next(text3);
+    const m = searcher.next(text2);
     if (m) {
-      return createFindMatch(this._getMultilineMatchRange(model, deltaOffset, text3, lfCounter, m.index, m[0]), m, captureMatches);
+      return createFindMatch(this._getMultilineMatchRange(model, deltaOffset, text2, lfCounter, m.index, m[0]), m, captureMatches);
     }
     if (searchStart.lineNumber !== 1 || searchStart.column !== 1) {
       return this._doFindNextMatchMultiline(model, new Position(1, 1), searcher, captureMatches);
@@ -16167,24 +16167,24 @@ var TextModelSearch = class {
   static _doFindNextMatchLineByLine(model, searchStart, searcher, captureMatches) {
     const lineCount = model.getLineCount();
     const startLineNumber = searchStart.lineNumber;
-    const text3 = model.getLineContent(startLineNumber);
-    const r = this._findFirstMatchInLine(searcher, text3, startLineNumber, searchStart.column, captureMatches);
+    const text2 = model.getLineContent(startLineNumber);
+    const r = this._findFirstMatchInLine(searcher, text2, startLineNumber, searchStart.column, captureMatches);
     if (r) {
       return r;
     }
     for (let i = 1; i <= lineCount; i++) {
       const lineIndex = (startLineNumber + i - 1) % lineCount;
-      const text4 = model.getLineContent(lineIndex + 1);
-      const r2 = this._findFirstMatchInLine(searcher, text4, lineIndex + 1, 1, captureMatches);
+      const text3 = model.getLineContent(lineIndex + 1);
+      const r2 = this._findFirstMatchInLine(searcher, text3, lineIndex + 1, 1, captureMatches);
       if (r2) {
         return r2;
       }
     }
     return null;
   }
-  static _findFirstMatchInLine(searcher, text3, lineNumber, fromColumn, captureMatches) {
+  static _findFirstMatchInLine(searcher, text2, lineNumber, fromColumn, captureMatches) {
     searcher.reset(fromColumn - 1);
-    const m = searcher.next(text3);
+    const m = searcher.next(text2);
     if (m) {
       return createFindMatch(new Range(lineNumber, m.index + 1, lineNumber, m.index + 1 + m[0].length), m, captureMatches);
     }
@@ -16215,36 +16215,36 @@ var TextModelSearch = class {
   static _doFindPreviousMatchLineByLine(model, searchStart, searcher, captureMatches) {
     const lineCount = model.getLineCount();
     const startLineNumber = searchStart.lineNumber;
-    const text3 = model.getLineContent(startLineNumber).substring(0, searchStart.column - 1);
-    const r = this._findLastMatchInLine(searcher, text3, startLineNumber, captureMatches);
+    const text2 = model.getLineContent(startLineNumber).substring(0, searchStart.column - 1);
+    const r = this._findLastMatchInLine(searcher, text2, startLineNumber, captureMatches);
     if (r) {
       return r;
     }
     for (let i = 1; i <= lineCount; i++) {
       const lineIndex = (lineCount + startLineNumber - i - 1) % lineCount;
-      const text4 = model.getLineContent(lineIndex + 1);
-      const r2 = this._findLastMatchInLine(searcher, text4, lineIndex + 1, captureMatches);
+      const text3 = model.getLineContent(lineIndex + 1);
+      const r2 = this._findLastMatchInLine(searcher, text3, lineIndex + 1, captureMatches);
       if (r2) {
         return r2;
       }
     }
     return null;
   }
-  static _findLastMatchInLine(searcher, text3, lineNumber, captureMatches) {
+  static _findLastMatchInLine(searcher, text2, lineNumber, captureMatches) {
     let bestResult = null;
     let m;
     searcher.reset(0);
-    while (m = searcher.next(text3)) {
+    while (m = searcher.next(text2)) {
       bestResult = createFindMatch(new Range(lineNumber, m.index + 1, lineNumber, m.index + 1 + m[0].length), m, captureMatches);
     }
     return bestResult;
   }
 };
-function leftIsWordBounday(wordSeparators2, text3, textLength, matchStartIndex, matchLength) {
+function leftIsWordBounday(wordSeparators2, text2, textLength, matchStartIndex, matchLength) {
   if (matchStartIndex === 0) {
     return true;
   }
-  const charBefore = text3.charCodeAt(matchStartIndex - 1);
+  const charBefore = text2.charCodeAt(matchStartIndex - 1);
   if (wordSeparators2.get(charBefore) !== 0) {
     return true;
   }
@@ -16252,18 +16252,18 @@ function leftIsWordBounday(wordSeparators2, text3, textLength, matchStartIndex, 
     return true;
   }
   if (matchLength > 0) {
-    const firstCharInMatch = text3.charCodeAt(matchStartIndex);
+    const firstCharInMatch = text2.charCodeAt(matchStartIndex);
     if (wordSeparators2.get(firstCharInMatch) !== 0) {
       return true;
     }
   }
   return false;
 }
-function rightIsWordBounday(wordSeparators2, text3, textLength, matchStartIndex, matchLength) {
+function rightIsWordBounday(wordSeparators2, text2, textLength, matchStartIndex, matchLength) {
   if (matchStartIndex + matchLength === textLength) {
     return true;
   }
-  const charAfter = text3.charCodeAt(matchStartIndex + matchLength);
+  const charAfter = text2.charCodeAt(matchStartIndex + matchLength);
   if (wordSeparators2.get(charAfter) !== 0) {
     return true;
   }
@@ -16271,15 +16271,15 @@ function rightIsWordBounday(wordSeparators2, text3, textLength, matchStartIndex,
     return true;
   }
   if (matchLength > 0) {
-    const lastCharInMatch = text3.charCodeAt(matchStartIndex + matchLength - 1);
+    const lastCharInMatch = text2.charCodeAt(matchStartIndex + matchLength - 1);
     if (wordSeparators2.get(lastCharInMatch) !== 0) {
       return true;
     }
   }
   return false;
 }
-function isValidMatch(wordSeparators2, text3, textLength, matchStartIndex, matchLength) {
-  return leftIsWordBounday(wordSeparators2, text3, textLength, matchStartIndex, matchLength) && rightIsWordBounday(wordSeparators2, text3, textLength, matchStartIndex, matchLength);
+function isValidMatch(wordSeparators2, text2, textLength, matchStartIndex, matchLength) {
+  return leftIsWordBounday(wordSeparators2, text2, textLength, matchStartIndex, matchLength) && rightIsWordBounday(wordSeparators2, text2, textLength, matchStartIndex, matchLength);
 }
 var Searcher = class {
   constructor(wordSeparators2, searchRegex) {
@@ -16293,14 +16293,14 @@ var Searcher = class {
     this._prevMatchStartIndex = -1;
     this._prevMatchLength = 0;
   }
-  next(text3) {
-    const textLength = text3.length;
+  next(text2) {
+    const textLength = text2.length;
     let m;
     do {
       if (this._prevMatchStartIndex + this._prevMatchLength === textLength) {
         return null;
       }
-      m = this._searchRegex.exec(text3);
+      m = this._searchRegex.exec(text2);
       if (!m) {
         return null;
       }
@@ -16308,7 +16308,7 @@ var Searcher = class {
       const matchLength = m[0].length;
       if (matchStartIndex === this._prevMatchStartIndex && matchLength === this._prevMatchLength) {
         if (matchLength === 0) {
-          if (getNextCodePoint(text3, textLength, this._searchRegex.lastIndex) > 65535) {
+          if (getNextCodePoint(text2, textLength, this._searchRegex.lastIndex) > 65535) {
             this._searchRegex.lastIndex += 2;
           } else {
             this._searchRegex.lastIndex += 1;
@@ -16319,7 +16319,7 @@ var Searcher = class {
       }
       this._prevMatchStartIndex = matchStartIndex;
       this._prevMatchLength = matchLength;
-      if (!this._wordSeparators || isValidMatch(this._wordSeparators, text3, textLength, matchStartIndex, matchLength)) {
+      if (!this._wordSeparators || isValidMatch(this._wordSeparators, text2, textLength, matchStartIndex, matchLength)) {
         return m;
       }
     } while (m);
@@ -16776,29 +16776,29 @@ var EditorSimpleWorker = class {
         const bRng = b.range ? 0 : 1;
         return aRng - bRng;
       });
-      for (let { range: range2, text: text3, eol } of edits) {
+      for (let { range: range2, text: text2, eol } of edits) {
         if (typeof eol === "number") {
           lastEol = eol;
         }
-        if (Range.isEmpty(range2) && !text3) {
+        if (Range.isEmpty(range2) && !text2) {
           continue;
         }
         const original = model.getValueInRange(range2);
-        text3 = text3.replace(/\r\n|\n|\r/g, model.eol);
-        if (original === text3) {
+        text2 = text2.replace(/\r\n|\n|\r/g, model.eol);
+        if (original === text2) {
           continue;
         }
-        if (Math.max(text3.length, original.length) > EditorSimpleWorker._diffLimit) {
-          result.push({ range: range2, text: text3 });
+        if (Math.max(text2.length, original.length) > EditorSimpleWorker._diffLimit) {
+          result.push({ range: range2, text: text2 });
           continue;
         }
-        const changes = stringDiff(original, text3, false);
+        const changes = stringDiff(original, text2, false);
         const editOffset = model.offsetAt(Range.lift(range2).getStartPosition());
         for (const change of changes) {
           const start = model.positionAt(editOffset + change.originalStart);
           const end = model.positionAt(editOffset + change.originalStart + change.originalLength);
           const newEdit = {
-            text: text3.substr(change.modifiedStart, change.modifiedLength),
+            text: text2.substr(change.modifiedStart, change.modifiedLength),
             range: { startLineNumber: start.lineNumber, startColumn: start.column, endLineNumber: end.lineNumber, endColumn: end.column }
           };
           if (model.getValueInRange(newEdit.range) !== newEdit.text) {
@@ -17578,11 +17578,11 @@ var TokenMetadata = class {
 
 // node_modules/.pnpm/monaco-editor@0.34.0/node_modules/monaco-editor/esm/vs/editor/common/tokens/lineTokens.js
 var LineTokens = class {
-  constructor(tokens, text3, decoder) {
+  constructor(tokens, text2, decoder) {
     this._lineTokensBrand = void 0;
     this._tokens = tokens;
     this._tokensCount = this._tokens.length >>> 1;
-    this._text = text3;
+    this._text = text2;
     this._languageIdCodec = decoder;
   }
   static createEmpty(lineContent, decoder) {
@@ -17700,33 +17700,33 @@ var LineTokens = class {
     }
     let nextOriginalTokenIdx = 0;
     let nextInsertTokenIdx = 0;
-    let text3 = "";
+    let text2 = "";
     const newTokens = new Array();
     let originalEndOffset = 0;
     while (true) {
       const nextOriginalTokenEndOffset = nextOriginalTokenIdx < this._tokensCount ? this._tokens[nextOriginalTokenIdx << 1] : -1;
       const nextInsertToken = nextInsertTokenIdx < insertTokens.length ? insertTokens[nextInsertTokenIdx] : null;
       if (nextOriginalTokenEndOffset !== -1 && (nextInsertToken === null || nextOriginalTokenEndOffset <= nextInsertToken.offset)) {
-        text3 += this._text.substring(originalEndOffset, nextOriginalTokenEndOffset);
+        text2 += this._text.substring(originalEndOffset, nextOriginalTokenEndOffset);
         const metadata = this._tokens[(nextOriginalTokenIdx << 1) + 1];
-        newTokens.push(text3.length, metadata);
+        newTokens.push(text2.length, metadata);
         nextOriginalTokenIdx++;
         originalEndOffset = nextOriginalTokenEndOffset;
       } else if (nextInsertToken) {
         if (nextInsertToken.offset > originalEndOffset) {
-          text3 += this._text.substring(originalEndOffset, nextInsertToken.offset);
+          text2 += this._text.substring(originalEndOffset, nextInsertToken.offset);
           const metadata = this._tokens[(nextOriginalTokenIdx << 1) + 1];
-          newTokens.push(text3.length, metadata);
+          newTokens.push(text2.length, metadata);
           originalEndOffset = nextInsertToken.offset;
         }
-        text3 += nextInsertToken.text;
-        newTokens.push(text3.length, nextInsertToken.tokenMetadata);
+        text2 += nextInsertToken.text;
+        newTokens.push(text2.length, nextInsertToken.tokenMetadata);
         nextInsertTokenIdx++;
       } else {
         break;
       }
     }
-    return new LineTokens(new Uint32Array(newTokens), text3, this._languageIdCodec);
+    return new LineTokens(new Uint32Array(newTokens), text2, this._languageIdCodec);
   }
 };
 LineTokens.defaultTokenMetadata = (0 << 11 | 1 << 15 | 2 << 24) >>> 0;
@@ -19636,26 +19636,26 @@ var Colorizer = class {
     }
     const languageId = languageService.getLanguageIdByMimeType(mimeType) || mimeType;
     themeService.setTheme(theme);
-    const text3 = domNode.firstChild ? domNode.firstChild.nodeValue : "";
+    const text2 = domNode.firstChild ? domNode.firstChild.nodeValue : "";
     domNode.className += " " + theme;
     const render = (str) => {
       var _a11;
       const trustedhtml = (_a11 = ttPolicy2 === null || ttPolicy2 === void 0 ? void 0 : ttPolicy2.createHTML(str)) !== null && _a11 !== void 0 ? _a11 : str;
       domNode.innerHTML = trustedhtml;
     };
-    return this.colorize(languageService, text3 || "", languageId, options).then(render, (err) => console.error(err));
+    return this.colorize(languageService, text2 || "", languageId, options).then(render, (err) => console.error(err));
   }
-  static colorize(languageService, text3, languageId, options) {
+  static colorize(languageService, text2, languageId, options) {
     return __awaiter5(this, void 0, void 0, function* () {
       const languageIdCodec = languageService.languageIdCodec;
       let tabSize = 4;
       if (options && typeof options.tabSize === "number") {
         tabSize = options.tabSize;
       }
-      if (startsWithUTF8BOM(text3)) {
-        text3 = text3.substr(1);
+      if (startsWithUTF8BOM(text2)) {
+        text2 = text2.substr(1);
       }
-      const lines = splitLines(text3);
+      const lines = splitLines(text2);
       if (!languageService.isRegisteredLanguageId(languageId)) {
         return _fakeColorize(lines, tabSize, languageIdCodec);
       }
@@ -20211,7 +20211,7 @@ var svgFilters = freeze(["feBlend", "feColorMatrix", "feComponentTransfer", "feC
 var svgDisallowed = freeze(["animate", "color-profile", "cursor", "discard", "fedropshadow", "feimage", "font-face", "font-face-format", "font-face-name", "font-face-src", "font-face-uri", "foreignobject", "hatch", "hatchpath", "mesh", "meshgradient", "meshpatch", "meshrow", "missing-glyph", "script", "set", "solidcolor", "unknown", "use"]);
 var mathMl = freeze(["math", "menclose", "merror", "mfenced", "mfrac", "mglyph", "mi", "mlabeledtr", "mmultiscripts", "mn", "mo", "mover", "mpadded", "mphantom", "mroot", "mrow", "ms", "mspace", "msqrt", "mstyle", "msub", "msup", "msubsup", "mtable", "mtd", "mtext", "mtr", "munder", "munderover"]);
 var mathMlDisallowed = freeze(["maction", "maligngroup", "malignmark", "mlongdiv", "mscarries", "mscarry", "msgroup", "mstack", "msline", "msrow", "semantics", "annotation", "annotation-xml", "mprescripts", "none"]);
-var text2 = freeze(["#text"]);
+var text = freeze(["#text"]);
 var html$1 = freeze(["accept", "action", "align", "alt", "autocapitalize", "autocomplete", "autopictureinpicture", "autoplay", "background", "bgcolor", "border", "capture", "cellpadding", "cellspacing", "checked", "cite", "class", "clear", "color", "cols", "colspan", "controls", "controlslist", "coords", "crossorigin", "datetime", "decoding", "default", "dir", "disabled", "disablepictureinpicture", "disableremoteplayback", "download", "draggable", "enctype", "enterkeyhint", "face", "for", "headers", "height", "hidden", "high", "href", "hreflang", "id", "inputmode", "integrity", "ismap", "kind", "label", "lang", "list", "loading", "loop", "low", "max", "maxlength", "media", "method", "min", "minlength", "multiple", "muted", "name", "noshade", "novalidate", "nowrap", "open", "optimum", "pattern", "placeholder", "playsinline", "poster", "preload", "pubdate", "radiogroup", "readonly", "rel", "required", "rev", "reversed", "role", "rows", "rowspan", "spellcheck", "scope", "selected", "shape", "size", "sizes", "span", "srclang", "start", "src", "srcset", "step", "style", "summary", "tabindex", "title", "translate", "type", "usemap", "valign", "value", "width", "xmlns", "slot"]);
 var svg$1 = freeze(["accent-height", "accumulate", "additive", "alignment-baseline", "ascent", "attributename", "attributetype", "azimuth", "basefrequency", "baseline-shift", "begin", "bias", "by", "class", "clip", "clippathunits", "clip-path", "clip-rule", "color", "color-interpolation", "color-interpolation-filters", "color-profile", "color-rendering", "cx", "cy", "d", "dx", "dy", "diffuseconstant", "direction", "display", "divisor", "dur", "edgemode", "elevation", "end", "fill", "fill-opacity", "fill-rule", "filter", "filterunits", "flood-color", "flood-opacity", "font-family", "font-size", "font-size-adjust", "font-stretch", "font-style", "font-variant", "font-weight", "fx", "fy", "g1", "g2", "glyph-name", "glyphref", "gradientunits", "gradienttransform", "height", "href", "id", "image-rendering", "in", "in2", "k", "k1", "k2", "k3", "k4", "kerning", "keypoints", "keysplines", "keytimes", "lang", "lengthadjust", "letter-spacing", "kernelmatrix", "kernelunitlength", "lighting-color", "local", "marker-end", "marker-mid", "marker-start", "markerheight", "markerunits", "markerwidth", "maskcontentunits", "maskunits", "max", "mask", "media", "method", "mode", "min", "name", "numoctaves", "offset", "operator", "opacity", "order", "orient", "orientation", "origin", "overflow", "paint-order", "path", "pathlength", "patterncontentunits", "patterntransform", "patternunits", "points", "preservealpha", "preserveaspectratio", "primitiveunits", "r", "rx", "ry", "radius", "refx", "refy", "repeatcount", "repeatdur", "restart", "result", "rotate", "scale", "seed", "shape-rendering", "specularconstant", "specularexponent", "spreadmethod", "startoffset", "stddeviation", "stitchtiles", "stop-color", "stop-opacity", "stroke-dasharray", "stroke-dashoffset", "stroke-linecap", "stroke-linejoin", "stroke-miterlimit", "stroke-opacity", "stroke", "stroke-width", "style", "surfacescale", "systemlanguage", "tabindex", "targetx", "targety", "transform", "text-anchor", "text-decoration", "text-rendering", "textlength", "type", "u1", "u2", "unicode", "values", "viewbox", "visibility", "version", "vert-adv-y", "vert-origin-x", "vert-origin-y", "width", "word-spacing", "wrap", "writing-mode", "xchannelselector", "ychannelselector", "x", "x1", "x2", "xmlns", "y", "y1", "y2", "z", "zoomandpan"]);
 var mathMl$1 = freeze(["accent", "accentunder", "align", "bevelled", "close", "columnsalign", "columnlines", "columnspan", "denomalign", "depth", "dir", "display", "displaystyle", "encoding", "fence", "frame", "height", "href", "id", "largeop", "length", "linethickness", "lspace", "lquote", "mathbackground", "mathcolor", "mathsize", "mathvariant", "maxsize", "minsize", "movablelimits", "notation", "numalign", "open", "rowalign", "rowlines", "rowspacing", "rowspan", "rspace", "rquote", "scriptlevel", "scriptminsize", "scriptsizemultiplier", "selection", "separator", "separators", "stretchy", "subscriptshift", "supscriptshift", "symmetric", "voffset", "width", "xmlns"]);
@@ -20305,7 +20305,7 @@ function createDOMPurify() {
   var MUSTACHE_EXPR$$1 = MUSTACHE_EXPR, ERB_EXPR$$1 = ERB_EXPR, DATA_ATTR$$1 = DATA_ATTR, ARIA_ATTR$$1 = ARIA_ATTR, IS_SCRIPT_OR_DATA$$1 = IS_SCRIPT_OR_DATA, ATTR_WHITESPACE$$1 = ATTR_WHITESPACE;
   var IS_ALLOWED_URI$$1 = IS_ALLOWED_URI;
   var ALLOWED_TAGS = null;
-  var DEFAULT_ALLOWED_TAGS = addToSet({}, [].concat(_toConsumableArray$1(html), _toConsumableArray$1(svg), _toConsumableArray$1(svgFilters), _toConsumableArray$1(mathMl), _toConsumableArray$1(text2)));
+  var DEFAULT_ALLOWED_TAGS = addToSet({}, [].concat(_toConsumableArray$1(html), _toConsumableArray$1(svg), _toConsumableArray$1(svgFilters), _toConsumableArray$1(mathMl), _toConsumableArray$1(text)));
   var ALLOWED_ATTR = null;
   var DEFAULT_ALLOWED_ATTR = addToSet({}, [].concat(_toConsumableArray$1(html$1), _toConsumableArray$1(svg$1), _toConsumableArray$1(mathMl$1), _toConsumableArray$1(xml)));
   var FORBID_TAGS = null;
@@ -20376,7 +20376,7 @@ function createDOMPurify() {
       RETURN_DOM = true;
     }
     if (USE_PROFILES) {
-      ALLOWED_TAGS = addToSet({}, [].concat(_toConsumableArray$1(text2)));
+      ALLOWED_TAGS = addToSet({}, [].concat(_toConsumableArray$1(text)));
       ALLOWED_ATTR = [];
       if (USE_PROFILES.html === true) {
         addToSet(ALLOWED_TAGS, html);
@@ -26831,11 +26831,11 @@ var CursorColumns = class {
   }
   static visibleColumnFromColumn(lineContent, column, tabSize) {
     const textLen = Math.min(column - 1, lineContent.length);
-    const text3 = lineContent.substring(0, textLen);
-    const iterator = new GraphemeIterator(text3);
+    const text2 = lineContent.substring(0, textLen);
+    const iterator = new GraphemeIterator(text2);
     let result = 0;
     while (!iterator.eol()) {
-      const codePoint = getNextCodePoint(text3, textLen, iterator.offset);
+      const codePoint = getNextCodePoint(text2, textLen, iterator.offset);
       iterator.nextGraphemeLength();
       result = this._nextVisibleColumn(codePoint, result, tabSize);
     }
@@ -27698,16 +27698,16 @@ function shadowCaretRangeFromPoint(shadowRoot, x, y) {
     }
     const rect = el.getBoundingClientRect();
     const font = window.getComputedStyle(el, null).getPropertyValue("font");
-    const text3 = el.innerText;
+    const text2 = el.innerText;
     let pixelCursor = rect.left;
     let offset = 0;
     let step;
     if (x > rect.left + rect.width) {
-      offset = text3.length;
+      offset = text2.length;
     } else {
       const charWidthReader = CharWidthReader.getInstance();
-      for (let i = 0; i < text3.length + 1; i++) {
-        step = charWidthReader.getCharWidth(text3.charAt(i), font) / 2;
+      for (let i = 0; i < text2.length + 1; i++) {
+        step = charWidthReader.getCharWidth(text2.charAt(i), font) / 2;
         pixelCursor += step;
         if (x < pixelCursor) {
           offset = i;
@@ -28356,13 +28356,13 @@ var PagedScreenReaderStrategy = class {
     const lastLineMaxColumn = model.getLineMaxColumn(lastLine);
     const posttextRange = selectionEndPageRange.intersectRanges(new Range(selection.endLineNumber, selection.endColumn, lastLine, lastLineMaxColumn));
     let posttext = model.getValueInRange(posttextRange, 1);
-    let text3;
+    let text2;
     if (selectionStartPage === selectionEndPage || selectionStartPage + 1 === selectionEndPage) {
-      text3 = model.getValueInRange(selection, 1);
+      text2 = model.getValueInRange(selection, 1);
     } else {
       const selectionRange1 = selectionStartPageRange.intersectRanges(selection);
       const selectionRange2 = selectionEndPageRange.intersectRanges(selection);
-      text3 = model.getValueInRange(selectionRange1, 1) + String.fromCharCode(8230) + model.getValueInRange(selectionRange2, 1);
+      text2 = model.getValueInRange(selectionRange1, 1) + String.fromCharCode(8230) + model.getValueInRange(selectionRange2, 1);
     }
     if (trimLongText) {
       const LIMIT_CHARS = 500;
@@ -28372,11 +28372,11 @@ var PagedScreenReaderStrategy = class {
       if (posttext.length > LIMIT_CHARS) {
         posttext = posttext.substring(0, LIMIT_CHARS);
       }
-      if (text3.length > 2 * LIMIT_CHARS) {
-        text3 = text3.substring(0, LIMIT_CHARS) + String.fromCharCode(8230) + text3.substring(text3.length - LIMIT_CHARS, text3.length);
+      if (text2.length > 2 * LIMIT_CHARS) {
+        text2 = text2.substring(0, LIMIT_CHARS) + String.fromCharCode(8230) + text2.substring(text2.length - LIMIT_CHARS, text2.length);
       }
     }
-    return new TextAreaState(pretext + text3 + posttext, pretext.length, pretext.length + text3.length, new Position(selection.startLineNumber, selection.startColumn), new Position(selection.endLineNumber, selection.endColumn));
+    return new TextAreaState(pretext + text2 + posttext, pretext.length, pretext.length + text2.length, new Position(selection.startLineNumber, selection.startColumn), new Position(selection.endLineNumber, selection.endColumn));
   }
 };
 
@@ -28408,15 +28408,15 @@ var CompositionContext = class {
   constructor() {
     this._lastTypeTextLength = 0;
   }
-  handleCompositionUpdate(text3) {
-    text3 = text3 || "";
+  handleCompositionUpdate(text2) {
+    text2 = text2 || "";
     const typeInput = {
-      text: text3,
+      text: text2,
       replacePrevCharCnt: this._lastTypeTextLength,
       replaceNextCharCnt: 0,
       positionDelta: 0
     };
-    this._lastTypeTextLength = text3.length;
+    this._lastTypeTextLength = text2.length;
     return typeInput;
   }
 };
@@ -28571,13 +28571,13 @@ var TextAreaInput = class extends Disposable {
       if (!e.clipboardData) {
         return;
       }
-      let [text3, metadata] = ClipboardEventUtils.getTextData(e.clipboardData);
-      if (!text3) {
+      let [text2, metadata] = ClipboardEventUtils.getTextData(e.clipboardData);
+      if (!text2) {
         return;
       }
-      metadata = metadata || InMemoryClipboardMetadataManager.INSTANCE.get(text3);
+      metadata = metadata || InMemoryClipboardMetadataManager.INSTANCE.get(text2);
       this._onPaste.fire({
-        text: text3,
+        text: text2,
         metadata
       });
     }));
@@ -28718,7 +28718,7 @@ var TextAreaInput = class extends Disposable {
 };
 var ClipboardEventUtils = class {
   static getTextData(clipboardData) {
-    const text3 = clipboardData.getData(Mimes.text);
+    const text2 = clipboardData.getData(Mimes.text);
     let metadata = null;
     const rawmetadata = clipboardData.getData("vscode-editor-data");
     if (typeof rawmetadata === "string") {
@@ -28730,14 +28730,14 @@ var ClipboardEventUtils = class {
       } catch (err) {
       }
     }
-    if (text3.length === 0 && metadata === null && clipboardData.files.length > 0) {
+    if (text2.length === 0 && metadata === null && clipboardData.files.length > 0) {
       const files = Array.prototype.slice.call(clipboardData.files, 0);
       return [files.map((file) => file.name).join("\n"), null];
     }
-    return [text3, metadata];
+    return [text2, metadata];
   }
-  static setTextData(clipboardData, text3, html2, metadata) {
-    clipboardData.setData(Mimes.text, text3);
+  static setTextData(clipboardData, text2, html2, metadata) {
+    clipboardData.setData(Mimes.text, text2);
     if (typeof html2 === "string") {
       clipboardData.setData("text/html", html2);
     }
@@ -29384,10 +29384,10 @@ var TextAreaHandler = class extends ViewPart {
         const newLineCharacter = this._context.viewModel.model.getEOL();
         const isFromEmptySelection = this._emptySelectionClipboard && this._modelSelections.length === 1 && this._modelSelections[0].isEmpty();
         const multicursorText = Array.isArray(rawTextToCopy) ? rawTextToCopy : null;
-        const text3 = Array.isArray(rawTextToCopy) ? rawTextToCopy.join(newLineCharacter) : rawTextToCopy;
+        const text2 = Array.isArray(rawTextToCopy) ? rawTextToCopy.join(newLineCharacter) : rawTextToCopy;
         let html2 = void 0;
         let mode = null;
-        if (CopyOptions.forceCopyWithSyntaxHighlighting || this._copyWithSyntaxHighlighting && text3.length < 65536) {
+        if (CopyOptions.forceCopyWithSyntaxHighlighting || this._copyWithSyntaxHighlighting && text2.length < 65536) {
           const richText = this._context.viewModel.getRichTextToCopy(this._modelSelections, this._emptySelectionClipboard);
           if (richText) {
             html2 = richText.html;
@@ -29397,7 +29397,7 @@ var TextAreaHandler = class extends ViewPart {
         return {
           isFromEmptySelection,
           multicursorText,
-          text: text3,
+          text: text2,
           html: html2,
           mode
         };
@@ -29783,11 +29783,11 @@ var TextAreaHandler = class extends ViewPart {
       useCover: false
     });
   }
-  _newlinecount(text3) {
+  _newlinecount(text2) {
     let result = 0;
     let startIndex = -1;
     do {
-      startIndex = text3.indexOf("\n", startIndex + 1);
+      startIndex = text2.indexOf("\n", startIndex + 1);
       if (startIndex === -1) {
         break;
       }
@@ -29836,8 +29836,8 @@ var TextAreaHandler = class extends ViewPart {
     }
   }
 };
-function measureText(text3, fontInfo) {
-  if (text3.length === 0) {
+function measureText(text2, fontInfo) {
+  if (text2.length === 0) {
     return 0;
   }
   const container = document.createElement("div");
@@ -29847,7 +29847,7 @@ function measureText(text3, fontInfo) {
   const regularDomNode = document.createElement("span");
   applyFontInfo(regularDomNode, fontInfo);
   regularDomNode.style.whiteSpace = "pre";
-  regularDomNode.append(text3);
+  regularDomNode.append(text2);
   container.appendChild(regularDomNode);
   document.body.appendChild(container);
   const res = regularDomNode.offsetWidth;
@@ -30156,9 +30156,9 @@ var ColumnSelection = class {
 
 // node_modules/.pnpm/monaco-editor@0.34.0/node_modules/monaco-editor/esm/vs/editor/common/commands/replaceCommand.js
 var ReplaceCommand = class {
-  constructor(range2, text3, insertsAutoWhitespace = false) {
+  constructor(range2, text2, insertsAutoWhitespace = false) {
     this._range = range2;
-    this._text = text3;
+    this._text = text2;
     this.insertsAutoWhitespace = insertsAutoWhitespace;
   }
   getEditOperations(model, builder) {
@@ -30171,9 +30171,9 @@ var ReplaceCommand = class {
   }
 };
 var ReplaceCommandWithoutChangingPosition = class {
-  constructor(range2, text3, insertsAutoWhitespace = false) {
+  constructor(range2, text2, insertsAutoWhitespace = false) {
     this._range = range2;
-    this._text = text3;
+    this._text = text2;
     this.insertsAutoWhitespace = insertsAutoWhitespace;
   }
   getEditOperations(model, builder) {
@@ -30186,9 +30186,9 @@ var ReplaceCommandWithoutChangingPosition = class {
   }
 };
 var ReplaceCommandWithOffsetCursorState = class {
-  constructor(range2, text3, lineNumberDeltaOffset, columnDeltaOffset, insertsAutoWhitespace = false) {
+  constructor(range2, text2, lineNumberDeltaOffset, columnDeltaOffset, insertsAutoWhitespace = false) {
     this._range = range2;
-    this._text = text3;
+    this._text = text2;
     this._columnDeltaOffset = columnDeltaOffset;
     this._lineNumberDeltaOffset = lineNumberDeltaOffset;
     this.insertsAutoWhitespace = insertsAutoWhitespace;
@@ -30203,9 +30203,9 @@ var ReplaceCommandWithOffsetCursorState = class {
   }
 };
 var ReplaceCommandThatPreservesSelection = class {
-  constructor(editRange, text3, initialSelection, forceMoveMarkers = false) {
+  constructor(editRange, text2, initialSelection, forceMoveMarkers = false) {
     this._range = editRange;
-    this._text = text3;
+    this._text = text2;
     this._initialSelection = initialSelection;
     this._forceMoveMarkers = forceMoveMarkers;
     this._selectionId = null;
@@ -31895,11 +31895,11 @@ var ShiftCommand = class ShiftCommand2 {
       return cachedStringRepeat(indent, indentCount);
     }
   }
-  _addEditOperation(builder, range2, text3) {
+  _addEditOperation(builder, range2, text2) {
     if (this._useLastEditRangeForCursorEndPosition) {
-      builder.addTrackedEditOperation(range2, text3);
+      builder.addTrackedEditOperation(range2, text2);
     } else {
-      builder.addEditOperation(range2, text3);
+      builder.addEditOperation(range2, text2);
     }
   }
   getEditOperations(model, builder) {
@@ -32081,8 +32081,8 @@ function getPrecedingValidLine(model, lineNumber, indentRulesSupport) {
       if (model.tokenization.getLanguageIdAtPosition(lastLineNumber, 0) !== languageId) {
         return resultLineNumber;
       }
-      const text3 = model.getLineContent(lastLineNumber);
-      if (indentRulesSupport.shouldIgnore(text3) || /^\s+$/.test(text3) || text3 === "") {
+      const text2 = model.getLineContent(lastLineNumber);
+      if (indentRulesSupport.shouldIgnore(text2) || /^\s+$/.test(text2) || text2 === "") {
         resultLineNumber = lastLineNumber;
         continue;
       }
@@ -32343,17 +32343,17 @@ var TypeOperations = class {
     count = count || 1;
     return ShiftCommand.unshiftIndent(indentation, indentation.length + count, config.tabSize, config.indentSize, config.insertSpaces);
   }
-  static _distributedPaste(config, model, selections, text3) {
+  static _distributedPaste(config, model, selections, text2) {
     const commands = [];
     for (let i = 0, len = selections.length; i < len; i++) {
-      commands[i] = new ReplaceCommand(selections[i], text3[i]);
+      commands[i] = new ReplaceCommand(selections[i], text2[i]);
     }
     return new EditOperationResult(0, commands, {
       shouldPushStackElementBefore: true,
       shouldPushStackElementAfter: true
     });
   }
-  static _simplePaste(config, model, selections, text3, pasteOnNewLine) {
+  static _simplePaste(config, model, selections, text2, pasteOnNewLine) {
     const commands = [];
     for (let i = 0, len = selections.length; i < len; i++) {
       const selection = selections[i];
@@ -32361,14 +32361,14 @@ var TypeOperations = class {
       if (pasteOnNewLine && !selection.isEmpty()) {
         pasteOnNewLine = false;
       }
-      if (pasteOnNewLine && text3.indexOf("\n") !== text3.length - 1) {
+      if (pasteOnNewLine && text2.indexOf("\n") !== text2.length - 1) {
         pasteOnNewLine = false;
       }
       if (pasteOnNewLine) {
         const typeSelection = new Range(position.lineNumber, 1, position.lineNumber, 1);
-        commands[i] = new ReplaceCommandThatPreservesSelection(typeSelection, text3, selection, true);
+        commands[i] = new ReplaceCommandThatPreservesSelection(typeSelection, text2, selection, true);
       } else {
-        commands[i] = new ReplaceCommand(selection, text3);
+        commands[i] = new ReplaceCommand(selection, text2);
       }
     }
     return new EditOperationResult(0, commands, {
@@ -32376,7 +32376,7 @@ var TypeOperations = class {
       shouldPushStackElementAfter: true
     });
   }
-  static _distributePasteToCursors(config, selections, text3, pasteOnNewLine, multicursorText) {
+  static _distributePasteToCursors(config, selections, text2, pasteOnNewLine, multicursorText) {
     if (pasteOnNewLine) {
       return null;
     }
@@ -32387,26 +32387,26 @@ var TypeOperations = class {
       return multicursorText;
     }
     if (config.multiCursorPaste === "spread") {
-      if (text3.charCodeAt(text3.length - 1) === 10) {
-        text3 = text3.substr(0, text3.length - 1);
+      if (text2.charCodeAt(text2.length - 1) === 10) {
+        text2 = text2.substr(0, text2.length - 1);
       }
-      if (text3.charCodeAt(text3.length - 1) === 13) {
-        text3 = text3.substr(0, text3.length - 1);
+      if (text2.charCodeAt(text2.length - 1) === 13) {
+        text2 = text2.substr(0, text2.length - 1);
       }
-      const lines = splitLines(text3);
+      const lines = splitLines(text2);
       if (lines.length === selections.length) {
         return lines;
       }
     }
     return null;
   }
-  static paste(config, model, selections, text3, pasteOnNewLine, multicursorText) {
-    const distributedPaste = this._distributePasteToCursors(config, selections, text3, pasteOnNewLine, multicursorText);
+  static paste(config, model, selections, text2, pasteOnNewLine, multicursorText) {
+    const distributedPaste = this._distributePasteToCursors(config, selections, text2, pasteOnNewLine, multicursorText);
     if (distributedPaste) {
       selections = selections.sort(Range.compareRangesUsingStarts);
       return this._distributedPaste(config, model, selections, distributedPaste);
     } else {
-      return this._simplePaste(config, model, selections, text3, pasteOnNewLine);
+      return this._simplePaste(config, model, selections, text2, pasteOnNewLine);
     }
   }
   static _goodIndentForLine(config, model, lineNumber) {
@@ -32499,14 +32499,14 @@ var TypeOperations = class {
     }
     return commands;
   }
-  static compositionType(prevEditOperationType, config, model, selections, text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta) {
-    const commands = selections.map((selection) => this._compositionType(model, selection, text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta));
+  static compositionType(prevEditOperationType, config, model, selections, text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta) {
+    const commands = selections.map((selection) => this._compositionType(model, selection, text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta));
     return new EditOperationResult(4, commands, {
       shouldPushStackElementBefore: shouldPushStackElementBetween(prevEditOperationType, 4),
       shouldPushStackElementAfter: false
     });
   }
-  static _compositionType(model, selection, text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta) {
+  static _compositionType(model, selection, text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta) {
     if (!selection.isEmpty()) {
       return null;
     }
@@ -32515,16 +32515,16 @@ var TypeOperations = class {
     const endColumn = Math.min(model.getLineMaxColumn(pos.lineNumber), pos.column + replaceNextCharCnt);
     const range2 = new Range(pos.lineNumber, startColumn, pos.lineNumber, endColumn);
     const oldText = model.getValueInRange(range2);
-    if (oldText === text3 && positionDelta === 0) {
+    if (oldText === text2 && positionDelta === 0) {
       return null;
     }
-    return new ReplaceCommandWithOffsetCursorState(range2, text3, 0, positionDelta);
+    return new ReplaceCommandWithOffsetCursorState(range2, text2, 0, positionDelta);
   }
-  static _typeCommand(range2, text3, keepPosition) {
+  static _typeCommand(range2, text2, keepPosition) {
     if (keepPosition) {
-      return new ReplaceCommandWithoutChangingPosition(range2, text3, true);
+      return new ReplaceCommandWithoutChangingPosition(range2, text2, true);
     } else {
-      return new ReplaceCommand(range2, text3, true);
+      return new ReplaceCommand(range2, text2, true);
     }
   }
   static _enter(config, model, keepPosition, range2) {
@@ -34732,14 +34732,14 @@ var ViewController = class {
     this.userInputEvents = userInputEvents;
     this.commandDelegate = commandDelegate;
   }
-  paste(text3, pasteOnNewLine, multicursorText, mode) {
-    this.commandDelegate.paste(text3, pasteOnNewLine, multicursorText, mode);
+  paste(text2, pasteOnNewLine, multicursorText, mode) {
+    this.commandDelegate.paste(text2, pasteOnNewLine, multicursorText, mode);
   }
-  type(text3) {
-    this.commandDelegate.type(text3);
+  type(text2) {
+    this.commandDelegate.type(text2);
   }
-  compositionType(text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta) {
-    this.commandDelegate.compositionType(text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta);
+  compositionType(text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta) {
+    this.commandDelegate.compositionType(text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta);
   }
   compositionStart() {
     this.commandDelegate.startComposition();
@@ -44577,24 +44577,24 @@ var CursorsController = class extends Disposable {
       }
     }, eventsCollector, source);
   }
-  type(eventsCollector, text3, source) {
+  type(eventsCollector, text2, source) {
     this._executeEdit(() => {
       if (source === "keyboard") {
-        const len = text3.length;
+        const len = text2.length;
         let offset = 0;
         while (offset < len) {
-          const charLength = nextCharLength(text3, offset);
-          const chr = text3.substr(offset, charLength);
+          const charLength = nextCharLength(text2, offset);
+          const chr = text2.substr(offset, charLength);
           this._executeEditOperation(TypeOperations.typeWithInterceptors(!!this._compositionState, this._prevEditOperationType, this.context.cursorConfig, this._model, this.getSelections(), this.getAutoClosedCharacters(), chr));
           offset += charLength;
         }
       } else {
-        this._executeEditOperation(TypeOperations.typeWithoutInterceptors(this._prevEditOperationType, this.context.cursorConfig, this._model, this.getSelections(), text3));
+        this._executeEditOperation(TypeOperations.typeWithoutInterceptors(this._prevEditOperationType, this.context.cursorConfig, this._model, this.getSelections(), text2));
       }
     }, eventsCollector, source);
   }
-  compositionType(eventsCollector, text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta, source) {
-    if (text3.length === 0 && replacePrevCharCnt === 0 && replaceNextCharCnt === 0) {
+  compositionType(eventsCollector, text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta, source) {
+    if (text2.length === 0 && replacePrevCharCnt === 0 && replaceNextCharCnt === 0) {
       if (positionDelta !== 0) {
         const newSelections = this.getSelections().map((selection) => {
           const position = selection.getPosition();
@@ -44605,12 +44605,12 @@ var CursorsController = class extends Disposable {
       return;
     }
     this._executeEdit(() => {
-      this._executeEditOperation(TypeOperations.compositionType(this._prevEditOperationType, this.context.cursorConfig, this._model, this.getSelections(), text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta));
+      this._executeEditOperation(TypeOperations.compositionType(this._prevEditOperationType, this.context.cursorConfig, this._model, this.getSelections(), text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta));
     }, eventsCollector, source);
   }
-  paste(eventsCollector, text3, pasteOnNewLine, multicursorText, source) {
+  paste(eventsCollector, text2, pasteOnNewLine, multicursorText, source) {
     this._executeEdit(() => {
-      this._executeEditOperation(TypeOperations.paste(this.context.cursorConfig, this._model, this.getSelections(), text3, pasteOnNewLine, multicursorText || []));
+      this._executeEditOperation(TypeOperations.paste(this.context.cursorConfig, this._model, this.getSelections(), text2, pasteOnNewLine, multicursorText || []));
     }, eventsCollector, source, 4);
   }
   cut(eventsCollector, source) {
@@ -44832,8 +44832,8 @@ var CommandExecutor = class {
   static _getEditOperationsFromCommand(ctx, majorIdentifier, command) {
     const operations = [];
     let operationMinor = 0;
-    const addEditOperation = (range2, text3, forceMoveMarkers = false) => {
-      if (Range.isEmpty(range2) && text3 === "") {
+    const addEditOperation = (range2, text2, forceMoveMarkers = false) => {
+      if (Range.isEmpty(range2) && text2 === "") {
         return;
       }
       operations.push({
@@ -44842,15 +44842,15 @@ var CommandExecutor = class {
           minor: operationMinor++
         },
         range: range2,
-        text: text3,
+        text: text2,
         forceMoveMarkers,
         isAutoWhitespaceEdit: command.insertsAutoWhitespace
       });
     };
     let hadTrackedEditOperation = false;
-    const addTrackedEditOperation = (selection, text3, forceMoveMarkers) => {
+    const addTrackedEditOperation = (selection, text2, forceMoveMarkers) => {
       hadTrackedEditOperation = true;
-      addEditOperation(selection, text3, forceMoveMarkers);
+      addEditOperation(selection, text2, forceMoveMarkers);
     };
     const trackSelection = (_selection, trackPreviousOnEmpty) => {
       const selection = Selection.liftSelection(_selection);
@@ -44933,8 +44933,8 @@ var CommandExecutor = class {
   }
 };
 var CompositionLineState = class {
-  constructor(text3, startSelection, endSelection) {
-    this.text = text3;
+  constructor(text2, startSelection, endSelection) {
+    this.text = text2;
     this.startSelection = startSelection;
     this.endSelection = endSelection;
   }
@@ -45001,19 +45001,19 @@ var InternalEditorAction = class {
 };
 
 // node_modules/.pnpm/monaco-editor@0.34.0/node_modules/monaco-editor/esm/vs/editor/common/core/eolCounter.js
-function countEOL(text3) {
+function countEOL(text2) {
   let eolCount = 0;
   let firstLineLength = 0;
   let lastLineStart = 0;
   let eol = 0;
-  for (let i = 0, len = text3.length; i < len; i++) {
-    const chr = text3.charCodeAt(i);
+  for (let i = 0, len = text2.length; i < len; i++) {
+    const chr = text2.charCodeAt(i);
     if (chr === 13) {
       if (eolCount === 0) {
         firstLineLength = i;
       }
       eolCount++;
-      if (i + 1 < len && text3.charCodeAt(i + 1) === 10) {
+      if (i + 1 < len && text2.charCodeAt(i + 1) === 10) {
         eol |= 2;
         i++;
       } else {
@@ -45030,9 +45030,9 @@ function countEOL(text3) {
     }
   }
   if (eolCount === 0) {
-    firstLineLength = text3.length;
+    firstLineLength = text2.length;
   }
-  return [eolCount, firstLineLength, text3.length - lastLineStart, eol];
+  return [eolCount, firstLineLength, text2.length - lastLineStart, eol];
 }
 
 // node_modules/.pnpm/monaco-editor@0.34.0/node_modules/monaco-editor/esm/vs/editor/common/textModelBracketPairs.js
@@ -45845,12 +45845,12 @@ var NonPeekableTextBufferTokenizer = class {
         const endOffset = lineTokens.getEndOffset(this.lineTokenOffset);
         if (containsBracketType && isOther && this.lineCharOffset < endOffset) {
           const languageId = lineTokens.getLanguageId(this.lineTokenOffset);
-          const text3 = this.line.substring(this.lineCharOffset, endOffset);
+          const text2 = this.line.substring(this.lineCharOffset, endOffset);
           const brackets = this.bracketTokens.getSingleLanguageBracketTokens(languageId);
           const regexp = brackets.regExpGlobal;
           if (regexp) {
             regexp.lastIndex = 0;
-            const match2 = regexp.exec(text3);
+            const match2 = regexp.exec(text2);
             if (match2) {
               peekedBracketToken = brackets.getToken(match2[0]);
               if (peekedBracketToken) {
@@ -45895,8 +45895,8 @@ var NonPeekableTextBufferTokenizer = class {
   }
 };
 var FastTokenizer = class {
-  constructor(text3, brackets) {
-    this.text = text3;
+  constructor(text2, brackets) {
+    this.text = text2;
     this._offset = lengthZero;
     this.idx = 0;
     const regExpStr = brackets.getRegExpStr();
@@ -45917,7 +45917,7 @@ var FastTokenizer = class {
     }
     if (regexp) {
       regexp.lastIndex = 0;
-      while ((match2 = regexp.exec(text3)) !== null) {
+      while ((match2 = regexp.exec(text2)) !== null) {
         const curOffset = match2.index;
         const value = match2[0];
         if (value === "\n") {
@@ -45952,7 +45952,7 @@ var FastTokenizer = class {
         }
       }
     }
-    const offset = text3.length;
+    const offset = text2.length;
     if (lastTokenEndOffset !== offset) {
       const length = lastTokenEndLine === curLineCount ? toLength(0, offset - lastTokenEndOffset) : toLength(curLineCount - lastTokenEndLine, offset - lastLineBreakOffset);
       tokens.push(new Token2(length, 0, -1, SmallImmutableSet.getEmpty(), new TextAstNode(length)));
@@ -47227,9 +47227,9 @@ var BracketPairsTextModelPart = class extends Disposable {
     if (!r) {
       return null;
     }
-    let text3 = this.textModel.getValueInRange(r);
-    text3 = text3.toLowerCase();
-    const bracketInfo = bracketConfig.getBracketInfo(text3);
+    let text2 = this.textModel.getValueInRange(r);
+    text2 = text2.toLowerCase();
+    const bracketInfo = bracketConfig.getBracketInfo(text2);
     if (!bracketInfo) {
       return null;
     }
@@ -49734,15 +49734,15 @@ var PieceTreeBase = class {
         tempChunkLen += len;
         return true;
       }
-      const text3 = tempChunk.replace(/\r\n|\r|\n/g, eol);
-      chunks.push(new StringBuffer(text3, createLineStartsFast(text3)));
+      const text2 = tempChunk.replace(/\r\n|\r|\n/g, eol);
+      chunks.push(new StringBuffer(text2, createLineStartsFast(text2)));
       tempChunk = str;
       tempChunkLen = len;
       return true;
     });
     if (tempChunkLen > 0) {
-      const text3 = tempChunk.replace(/\r\n|\r|\n/g, eol);
-      chunks.push(new StringBuffer(text3, createLineStartsFast(text3)));
+      const text2 = tempChunk.replace(/\r\n|\r|\n/g, eol);
+      chunks.push(new StringBuffer(text2, createLineStartsFast(text2)));
     }
     this.create(chunks, eol, true);
   }
@@ -50038,8 +50038,8 @@ var PieceTreeBase = class {
       }
       const startColumn2 = startLineNumber === searchRange.startLineNumber ? searchRange.startColumn - 1 : 0;
       if (startLineNumber === searchRange.endLineNumber) {
-        const text3 = this.getLineContent(startLineNumber).substring(startColumn2, searchRange.endColumn - 1);
-        resultLen = this._findMatchesInLine(searchData, searcher, text3, searchRange.endLineNumber, startColumn2, resultLen, result, captureMatches, limitResultCount);
+        const text2 = this.getLineContent(startLineNumber).substring(startColumn2, searchRange.endColumn - 1);
+        resultLen = this._findMatchesInLine(searchData, searcher, text2, searchRange.endLineNumber, startColumn2, resultLen, result, captureMatches, limitResultCount);
         return result;
       }
       resultLen = this._findMatchesInLine(searchData, searcher, this.getLineContent(startLineNumber).substr(startColumn2), startLineNumber, startColumn2, resultLen, result, captureMatches, limitResultCount);
@@ -50053,23 +50053,23 @@ var PieceTreeBase = class {
     }
     if (startLineNumber === searchRange.endLineNumber) {
       const startColumn2 = startLineNumber === searchRange.startLineNumber ? searchRange.startColumn - 1 : 0;
-      const text3 = this.getLineContent(startLineNumber).substring(startColumn2, searchRange.endColumn - 1);
-      resultLen = this._findMatchesInLine(searchData, searcher, text3, searchRange.endLineNumber, startColumn2, resultLen, result, captureMatches, limitResultCount);
+      const text2 = this.getLineContent(startLineNumber).substring(startColumn2, searchRange.endColumn - 1);
+      resultLen = this._findMatchesInLine(searchData, searcher, text2, searchRange.endLineNumber, startColumn2, resultLen, result, captureMatches, limitResultCount);
       return result;
     }
     const startColumn = startLineNumber === searchRange.startLineNumber ? searchRange.startColumn : 1;
     resultLen = this.findMatchesInNode(endPosition.node, searcher, startLineNumber, startColumn, start, end, searchData, captureMatches, limitResultCount, resultLen, result);
     return result;
   }
-  _findMatchesInLine(searchData, searcher, text3, lineNumber, deltaOffset, resultLen, result, captureMatches, limitResultCount) {
+  _findMatchesInLine(searchData, searcher, text2, lineNumber, deltaOffset, resultLen, result, captureMatches, limitResultCount) {
     const wordSeparators2 = searchData.wordSeparators;
     if (!captureMatches && searchData.simpleSearch) {
       const searchString = searchData.simpleSearch;
       const searchStringLen = searchString.length;
-      const textLength = text3.length;
+      const textLength = text2.length;
       let lastMatchIndex = -searchStringLen;
-      while ((lastMatchIndex = text3.indexOf(searchString, lastMatchIndex + searchStringLen)) !== -1) {
-        if (!wordSeparators2 || isValidMatch(wordSeparators2, text3, textLength, lastMatchIndex, searchStringLen)) {
+      while ((lastMatchIndex = text2.indexOf(searchString, lastMatchIndex + searchStringLen)) !== -1) {
+        if (!wordSeparators2 || isValidMatch(wordSeparators2, text2, textLength, lastMatchIndex, searchStringLen)) {
           result[resultLen++] = new FindMatch(new Range(lineNumber, lastMatchIndex + 1 + deltaOffset, lineNumber, lastMatchIndex + 1 + searchStringLen + deltaOffset), null);
           if (resultLen >= limitResultCount) {
             return resultLen;
@@ -50081,7 +50081,7 @@ var PieceTreeBase = class {
     let m;
     searcher.reset(0);
     do {
-      m = searcher.next(text3);
+      m = searcher.next(text2);
       if (m) {
         result[resultLen++] = createFindMatch(new Range(lineNumber, m.index + 1 + deltaOffset, lineNumber, m.index + 1 + m[0].length + deltaOffset), m, captureMatches);
         if (resultLen >= limitResultCount) {
@@ -50312,39 +50312,39 @@ var PieceTreeBase = class {
       rbDelete(this, nodes[i]);
     }
   }
-  createNewPieces(text3) {
-    if (text3.length > AverageBufferSize) {
+  createNewPieces(text2) {
+    if (text2.length > AverageBufferSize) {
       const newPieces = [];
-      while (text3.length > AverageBufferSize) {
-        const lastChar = text3.charCodeAt(AverageBufferSize - 1);
+      while (text2.length > AverageBufferSize) {
+        const lastChar = text2.charCodeAt(AverageBufferSize - 1);
         let splitText;
         if (lastChar === 13 || lastChar >= 55296 && lastChar <= 56319) {
-          splitText = text3.substring(0, AverageBufferSize - 1);
-          text3 = text3.substring(AverageBufferSize - 1);
+          splitText = text2.substring(0, AverageBufferSize - 1);
+          text2 = text2.substring(AverageBufferSize - 1);
         } else {
-          splitText = text3.substring(0, AverageBufferSize);
-          text3 = text3.substring(AverageBufferSize);
+          splitText = text2.substring(0, AverageBufferSize);
+          text2 = text2.substring(AverageBufferSize);
         }
         const lineStarts3 = createLineStartsFast(splitText);
         newPieces.push(new Piece(this._buffers.length, { line: 0, column: 0 }, { line: lineStarts3.length - 1, column: splitText.length - lineStarts3[lineStarts3.length - 1] }, lineStarts3.length - 1, splitText.length));
         this._buffers.push(new StringBuffer(splitText, lineStarts3));
       }
-      const lineStarts2 = createLineStartsFast(text3);
-      newPieces.push(new Piece(this._buffers.length, { line: 0, column: 0 }, { line: lineStarts2.length - 1, column: text3.length - lineStarts2[lineStarts2.length - 1] }, lineStarts2.length - 1, text3.length));
-      this._buffers.push(new StringBuffer(text3, lineStarts2));
+      const lineStarts2 = createLineStartsFast(text2);
+      newPieces.push(new Piece(this._buffers.length, { line: 0, column: 0 }, { line: lineStarts2.length - 1, column: text2.length - lineStarts2[lineStarts2.length - 1] }, lineStarts2.length - 1, text2.length));
+      this._buffers.push(new StringBuffer(text2, lineStarts2));
       return newPieces;
     }
     let startOffset = this._buffers[0].buffer.length;
-    const lineStarts = createLineStartsFast(text3, false);
+    const lineStarts = createLineStartsFast(text2, false);
     let start = this._lastChangeBufferPos;
-    if (this._buffers[0].lineStarts[this._buffers[0].lineStarts.length - 1] === startOffset && startOffset !== 0 && this.startWithLF(text3) && this.endWithCR(this._buffers[0].buffer)) {
+    if (this._buffers[0].lineStarts[this._buffers[0].lineStarts.length - 1] === startOffset && startOffset !== 0 && this.startWithLF(text2) && this.endWithCR(this._buffers[0].buffer)) {
       this._lastChangeBufferPos = { line: this._lastChangeBufferPos.line, column: this._lastChangeBufferPos.column + 1 };
       start = this._lastChangeBufferPos;
       for (let i = 0; i < lineStarts.length; i++) {
         lineStarts[i] += startOffset + 1;
       }
       this._buffers[0].lineStarts = this._buffers[0].lineStarts.concat(lineStarts.slice(1));
-      this._buffers[0].buffer += "_" + text3;
+      this._buffers[0].buffer += "_" + text2;
       startOffset += 1;
     } else {
       if (startOffset !== 0) {
@@ -50353,7 +50353,7 @@ var PieceTreeBase = class {
         }
       }
       this._buffers[0].lineStarts = this._buffers[0].lineStarts.concat(lineStarts.slice(1));
-      this._buffers[0].buffer += text3;
+      this._buffers[0].buffer += text2;
     }
     const endOffset = this._buffers[0].buffer.length;
     const endIndex = this._buffers[0].lineStarts.length - 1;
@@ -51106,15 +51106,15 @@ var PieceTreeTextBuffer = class extends Disposable {
       lastEndLineNumber = range2.endLineNumber;
       lastEndColumn = range2.endColumn;
     }
-    const text3 = result.join("");
-    const [eolCount, firstLineLength, lastLineLength] = countEOL(text3);
+    const text2 = result.join("");
+    const [eolCount, firstLineLength, lastLineLength] = countEOL(text2);
     return {
       sortIndex: 0,
       identifier: operations[0].identifier,
       range: entireEditRange,
       rangeOffset: this.getOffsetAt(entireEditRange.startLineNumber, entireEditRange.startColumn),
       rangeLength: this.getValueLengthInRange(entireEditRange, 0),
-      text: text3,
+      text: text2,
       eolCount,
       firstLineLength,
       lastLineLength,
@@ -51570,9 +51570,9 @@ var TextModelTokenization = class extends Disposable {
     }
     const languageId = this._textModel.getLanguageId();
     const lineContent = this._textModel.getLineContent(position.lineNumber);
-    const text3 = lineContent.substring(0, position.column - 1) + character + lineContent.substring(position.column - 1);
-    const r = safeTokenize(this._languageIdCodec, languageId, this._tokenizationStateStore.tokenizationSupport, text3, true, lineStartState);
-    const lineTokens = new LineTokens(r.tokens, text3, this._languageIdCodec);
+    const text2 = lineContent.substring(0, position.column - 1) + character + lineContent.substring(position.column - 1);
+    const r = safeTokenize(this._languageIdCodec, languageId, this._tokenizationStateStore.tokenizationSupport, text2, true, lineStartState);
+    const lineTokens = new LineTokens(r.tokens, text2, this._languageIdCodec);
     if (lineTokens.getCount() === 0) {
       return 0;
     }
@@ -51641,9 +51641,9 @@ var TextModelTokenization = class extends Disposable {
     const linesLength = this._textModel.getLineCount();
     const endLineIndex = lineNumber - 1;
     for (let lineIndex = this._tokenizationStateStore.invalidLineStartIndex; lineIndex <= endLineIndex; lineIndex++) {
-      const text3 = this._textModel.getLineContent(lineIndex + 1);
+      const text2 = this._textModel.getLineContent(lineIndex + 1);
       const lineStartState = this._tokenizationStateStore.getBeginState(lineIndex);
-      const r = safeTokenize(this._languageIdCodec, languageId, this._tokenizationStateStore.tokenizationSupport, text3, true, lineStartState);
+      const r = safeTokenize(this._languageIdCodec, languageId, this._tokenizationStateStore.tokenizationSupport, text2, true, lineStartState);
       builder.add(lineIndex + 1, r.tokens);
       this._tokenizationStateStore.setEndState(linesLength, lineIndex, r.endState);
       lineIndex = this._tokenizationStateStore.invalidLineStartIndex - 1;
@@ -51687,8 +51687,8 @@ var TextModelTokenization = class extends Disposable {
       state = r.endState;
     }
     for (let lineNumber = startLineNumber; lineNumber <= endLineNumber; lineNumber++) {
-      const text3 = this._textModel.getLineContent(lineNumber);
-      const r = safeTokenize(this._languageIdCodec, languageId, this._tokenizationStateStore.tokenizationSupport, text3, true, state);
+      const text2 = this._textModel.getLineContent(lineNumber);
+      const r = safeTokenize(this._languageIdCodec, languageId, this._tokenizationStateStore.tokenizationSupport, text2, true, state);
       builder.add(lineNumber, r.tokens);
       this._tokenizationStateStore.markMustBeTokenized(lineNumber - 1);
       state = r.endState;
@@ -51712,11 +51712,11 @@ function initializeTokenization(textModel, tokenizationPart) {
   }
   return [tokenizationSupport, initialState];
 }
-function safeTokenize(languageIdCodec, languageId, tokenizationSupport, text3, hasEOL, state) {
+function safeTokenize(languageIdCodec, languageId, tokenizationSupport, text2, hasEOL, state) {
   let r = null;
   if (tokenizationSupport) {
     try {
-      r = tokenizationSupport.tokenizeEncoded(text3, hasEOL, state.clone());
+      r = tokenizationSupport.tokenizeEncoded(text2, hasEOL, state.clone());
     } catch (e) {
       onUnexpectedError(e);
     }
@@ -51724,7 +51724,7 @@ function safeTokenize(languageIdCodec, languageId, tokenizationSupport, text3, h
   if (!r) {
     r = nullTokenizeEncoded(languageIdCodec.encodeLanguageId(languageId), state);
   }
-  LineTokens.convertToEndOffset(r.tokens, text3.length);
+  LineTokens.convertToEndOffset(r.tokens, text2.length);
   return r;
 }
 
@@ -52174,9 +52174,9 @@ var TokenizationTextModelPart = class extends TextModelPart {
       }
     });
   }
-  acceptEdit(range2, text3, eolCount, firstLineLength, lastLineLength) {
+  acceptEdit(range2, text2, eolCount, firstLineLength, lastLineLength) {
     this._tokens.acceptEdit(range2, eolCount, firstLineLength);
-    this._semanticTokens.acceptEdit(range2, eolCount, firstLineLength, lastLineLength, text3.length > 0 ? text3.charCodeAt(0) : 0);
+    this._semanticTokens.acceptEdit(range2, eolCount, firstLineLength, lastLineLength, text2.length > 0 ? text2.charCodeAt(0) : 0);
   }
   handleDidChangeAttached() {
     this._tokenization.handleDidChangeAttached();
@@ -52462,9 +52462,9 @@ var __param8 = function(paramIndex, decorator) {
     decorator(target, key, paramIndex);
   };
 };
-function createTextBufferFactory(text3) {
+function createTextBufferFactory(text2) {
   const builder = new PieceTreeTextBufferBuilder();
-  builder.acceptChunk(text3);
+  builder.acceptChunk(text2);
   return builder.finish();
 }
 function createTextBufferFactoryFromSnapshot(snapshot) {
@@ -52667,13 +52667,13 @@ var TextModel = class TextModel2 extends Disposable {
     const { textBuffer, disposable } = createTextBuffer(value, this._options.defaultEOL);
     this._setValueFromTextBuffer(textBuffer, disposable);
   }
-  _createContentChanged2(range2, rangeOffset, rangeLength, text3, isUndoing, isRedoing, isFlush) {
+  _createContentChanged2(range2, rangeOffset, rangeLength, text2, isUndoing, isRedoing, isFlush) {
     return {
       changes: [{
         range: range2,
         rangeOffset,
         rangeLength,
-        text: text3
+        text: text2
       }],
       eol: this._buffer.getEOL(),
       versionId: this.getVersionId(),
@@ -54131,7 +54131,7 @@ var DidChangeContentEmitter = class extends Disposable {
 };
 
 // node_modules/.pnpm/monaco-editor@0.34.0/node_modules/monaco-editor/esm/vs/editor/common/languages/textToHtmlTokenizer.js
-function tokenizeLineToHTML(text3, viewLineTokens, colorMap, startOffset, endOffset, tabSize, useNbsp) {
+function tokenizeLineToHTML(text2, viewLineTokens, colorMap, startOffset, endOffset, tabSize, useNbsp) {
   let result = `<div>`;
   let charIndex = startOffset;
   let tabsCharDelta = 0;
@@ -54143,7 +54143,7 @@ function tokenizeLineToHTML(text3, viewLineTokens, colorMap, startOffset, endOff
     }
     let partContent = "";
     for (; charIndex < tokenEndIndex && charIndex < endOffset; charIndex++) {
-      const charCode = text3.charCodeAt(charIndex);
+      const charCode = text2.charCodeAt(charIndex);
       switch (charCode) {
         case 9: {
           let insertSpacesCount = tabSize - (charIndex + tabsCharDelta) % tabSize;
@@ -57159,14 +57159,14 @@ var ViewModel = class extends Disposable {
   endComposition(source) {
     this._executeCursorEdit((eventsCollector) => this._cursor.endComposition(eventsCollector, source));
   }
-  type(text3, source) {
-    this._executeCursorEdit((eventsCollector) => this._cursor.type(eventsCollector, text3, source));
+  type(text2, source) {
+    this._executeCursorEdit((eventsCollector) => this._cursor.type(eventsCollector, text2, source));
   }
-  compositionType(text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta, source) {
-    this._executeCursorEdit((eventsCollector) => this._cursor.compositionType(eventsCollector, text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta, source));
+  compositionType(text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta, source) {
+    this._executeCursorEdit((eventsCollector) => this._cursor.compositionType(eventsCollector, text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta, source));
   }
-  paste(text3, pasteOnNewLine, multicursorText, source) {
-    this._executeCursorEdit((eventsCollector) => this._cursor.paste(eventsCollector, text3, pasteOnNewLine, multicursorText, source));
+  paste(text2, pasteOnNewLine, multicursorText, source) {
+    this._executeCursorEdit((eventsCollector) => this._cursor.paste(eventsCollector, text2, pasteOnNewLine, multicursorText, source));
   }
   cut(source) {
     this._executeCursorEdit((eventsCollector) => this._cursor.cut(eventsCollector, source));
@@ -57844,7 +57844,7 @@ function createLineBreaks(classifier, _lineText, injectedTexts, tabSize, firstLi
   let injectionOffsets;
   if (injectedTexts && injectedTexts.length > 0) {
     injectionOptions = injectedTexts.map((t) => t.options);
-    injectionOffsets = injectedTexts.map((text3) => text3.column - 1);
+    injectionOffsets = injectedTexts.map((text2) => text2.column - 1);
   } else {
     injectionOptions = null;
     injectionOffsets = null;
@@ -57989,7 +57989,7 @@ function createLineBreaks2(requests, fontInfo, tabSize, firstLineBreakColumn, wr
     if (injectedTexts) {
       const lineText = LineInjectedText.applyInjectedText(requests[requestIdx], injectedTexts);
       const injectionOptions = injectedTexts.map((t) => t.options);
-      const injectionOffsets = injectedTexts.map((text3) => text3.column - 1);
+      const injectionOffsets = injectedTexts.map((text2) => text2.column - 1);
       return new ModelLineProjectionData(injectionOffsets, injectionOptions, [lineText.length], [], 0);
     } else {
       return null;
@@ -58079,7 +58079,7 @@ function createLineBreaks2(requests, fontInfo, tabSize, firstLineBreakColumn, wr
     const curInjectedTexts = injectedTextsPerLine[i];
     if (curInjectedTexts) {
       injectionOptions = curInjectedTexts.map((t) => t.options);
-      injectionOffsets = curInjectedTexts.map((text3) => text3.column - 1);
+      injectionOffsets = curInjectedTexts.map((text2) => text2.column - 1);
     } else {
       injectionOptions = null;
       injectionOffsets = null;
@@ -58989,31 +58989,31 @@ var CodeEditorWidget = class CodeEditorWidget2 extends Disposable {
     this._modelData.viewModel.endComposition(source);
     this._onDidCompositionEnd.fire();
   }
-  _type(source, text3) {
-    if (!this._modelData || text3.length === 0) {
+  _type(source, text2) {
+    if (!this._modelData || text2.length === 0) {
       return;
     }
     if (source === "keyboard") {
-      this._onWillType.fire(text3);
+      this._onWillType.fire(text2);
     }
-    this._modelData.viewModel.type(text3, source);
+    this._modelData.viewModel.type(text2, source);
     if (source === "keyboard") {
-      this._onDidType.fire(text3);
+      this._onDidType.fire(text2);
     }
   }
-  _compositionType(source, text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta) {
+  _compositionType(source, text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta) {
     if (!this._modelData) {
       return;
     }
-    this._modelData.viewModel.compositionType(text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta, source);
+    this._modelData.viewModel.compositionType(text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta, source);
   }
-  _paste(source, text3, pasteOnNewLine, multicursorText, mode) {
-    if (!this._modelData || text3.length === 0) {
+  _paste(source, text2, pasteOnNewLine, multicursorText, mode) {
+    if (!this._modelData || text2.length === 0) {
       return;
     }
     const viewModel = this._modelData.viewModel;
     const startPosition = viewModel.getSelection().getStartPosition();
-    viewModel.paste(text3, pasteOnNewLine, multicursorText, source);
+    viewModel.paste(text2, pasteOnNewLine, multicursorText, source);
     const endPosition = viewModel.getSelection().getStartPosition();
     if (source === "keyboard") {
       this._onDidPaste.fire({
@@ -59417,14 +59417,14 @@ var CodeEditorWidget = class CodeEditorWidget2 extends Disposable {
     let commandDelegate;
     if (this.isSimpleWidget) {
       commandDelegate = {
-        paste: (text3, pasteOnNewLine, multicursorText, mode) => {
-          this._paste("keyboard", text3, pasteOnNewLine, multicursorText, mode);
+        paste: (text2, pasteOnNewLine, multicursorText, mode) => {
+          this._paste("keyboard", text2, pasteOnNewLine, multicursorText, mode);
         },
-        type: (text3) => {
-          this._type("keyboard", text3);
+        type: (text2) => {
+          this._type("keyboard", text2);
         },
-        compositionType: (text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta) => {
-          this._compositionType("keyboard", text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta);
+        compositionType: (text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta) => {
+          this._compositionType("keyboard", text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta);
         },
         startComposition: () => {
           this._startComposition();
@@ -59438,20 +59438,20 @@ var CodeEditorWidget = class CodeEditorWidget2 extends Disposable {
       };
     } else {
       commandDelegate = {
-        paste: (text3, pasteOnNewLine, multicursorText, mode) => {
-          const payload = { text: text3, pasteOnNewLine, multicursorText, mode };
+        paste: (text2, pasteOnNewLine, multicursorText, mode) => {
+          const payload = { text: text2, pasteOnNewLine, multicursorText, mode };
           this._commandService.executeCommand("paste", payload);
         },
-        type: (text3) => {
-          const payload = { text: text3 };
+        type: (text2) => {
+          const payload = { text: text2 };
           this._commandService.executeCommand("type", payload);
         },
-        compositionType: (text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta) => {
+        compositionType: (text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta) => {
           if (replaceNextCharCnt || positionDelta) {
-            const payload = { text: text3, replacePrevCharCnt, replaceNextCharCnt, positionDelta };
+            const payload = { text: text2, replacePrevCharCnt, replaceNextCharCnt, positionDelta };
             this._commandService.executeCommand("compositionType", payload);
           } else {
-            const payload = { text: text3, replaceCharCnt: replacePrevCharCnt };
+            const payload = { text: text2, replaceCharCnt: replacePrevCharCnt };
             this._commandService.executeCommand("replacePreviousChar", payload);
           }
         },
@@ -61724,25 +61724,25 @@ var iconStartMarker = "$(";
 var iconsRegex = new RegExp(`\\$\\(${CSSIcon.iconNameExpression}(?:${CSSIcon.iconModifierExpression})?\\)`, "g");
 var iconNameCharacterRegexp = new RegExp(CSSIcon.iconNameCharacter);
 var escapeIconsRegex = new RegExp(`(\\\\)?${iconsRegex.source}`, "g");
-function escapeIcons(text3) {
-  return text3.replace(escapeIconsRegex, (match2, escaped) => escaped ? match2 : `\\${match2}`);
+function escapeIcons(text2) {
+  return text2.replace(escapeIconsRegex, (match2, escaped) => escaped ? match2 : `\\${match2}`);
 }
 var markdownEscapedIconsRegex = new RegExp(`\\\\${iconsRegex.source}`, "g");
 var stripIconsRegex = new RegExp(`(\\s)?(\\\\)?${iconsRegex.source}(\\s)?`, "g");
-function stripIcons(text3) {
-  if (text3.indexOf(iconStartMarker) === -1) {
-    return text3;
+function stripIcons(text2) {
+  if (text2.indexOf(iconStartMarker) === -1) {
+    return text2;
   }
-  return text3.replace(stripIconsRegex, (match2, preWhitespace, escaped, postWhitespace) => escaped ? match2 : preWhitespace || postWhitespace || "");
+  return text2.replace(stripIconsRegex, (match2, preWhitespace, escaped, postWhitespace) => escaped ? match2 : preWhitespace || postWhitespace || "");
 }
-function parseLabelWithIcons(text3) {
-  const firstIconIndex = text3.indexOf(iconStartMarker);
+function parseLabelWithIcons(text2) {
+  const firstIconIndex = text2.indexOf(iconStartMarker);
   if (firstIconIndex === -1) {
-    return { text: text3 };
+    return { text: text2 };
   }
-  return doParseLabelWithIcons(text3, firstIconIndex);
+  return doParseLabelWithIcons(text2, firstIconIndex);
 }
-function doParseLabelWithIcons(text3, firstIconIndex) {
+function doParseLabelWithIcons(text2, firstIconIndex) {
   const iconOffsets = [];
   let textWithoutIcons = "";
   function appendChars(chars) {
@@ -61759,11 +61759,11 @@ function doParseLabelWithIcons(text3, firstIconIndex) {
   let char;
   let nextChar;
   let offset = firstIconIndex;
-  const length = text3.length;
-  appendChars(text3.substr(0, firstIconIndex));
+  const length = text2.length;
+  appendChars(text2.substr(0, firstIconIndex));
   while (offset < length) {
-    char = text3[offset];
-    nextChar = text3[offset + 1];
+    char = text2[offset];
+    nextChar = text2[offset + 1];
     if (char === iconStartMarker[0] && nextChar === iconStartMarker[1]) {
       currentIconStart = offset;
       appendChars(currentIconValue);
@@ -61791,12 +61791,12 @@ function doParseLabelWithIcons(text3, firstIconIndex) {
   return { text: textWithoutIcons, iconOffsets };
 }
 function matchesFuzzyIconAware(query, target, enableSeparateSubstringMatching = false) {
-  const { text: text3, iconOffsets } = target;
+  const { text: text2, iconOffsets } = target;
   if (!iconOffsets || iconOffsets.length === 0) {
-    return matchesFuzzy(query, text3, enableSeparateSubstringMatching);
+    return matchesFuzzy(query, text2, enableSeparateSubstringMatching);
   }
-  const wordToMatchAgainstWithoutIconsTrimmed = ltrim(text3, " ");
-  const leadingWhitespaceOffset = text3.length - wordToMatchAgainstWithoutIconsTrimmed.length;
+  const wordToMatchAgainstWithoutIconsTrimmed = ltrim(text2, " ");
+  const leadingWhitespaceOffset = text2.length - wordToMatchAgainstWithoutIconsTrimmed.length;
   const matches = matchesFuzzy(query, wordToMatchAgainstWithoutIconsTrimmed, enableSeparateSubstringMatching);
   if (matches) {
     for (const match2 of matches) {
@@ -61872,8 +61872,8 @@ function isMarkdownString(thing) {
   }
   return false;
 }
-function escapeMarkdownSyntaxTokens(text3) {
-  return text3.replace(/[\\`*_{}[\]()#+\-!]/g, "\\$&");
+function escapeMarkdownSyntaxTokens(text2) {
+  return text2.replace(/[\\`*_{}[\]()#+\-!]/g, "\\$&");
 }
 
 // node_modules/.pnpm/monaco-editor@0.34.0/node_modules/monaco-editor/esm/vs/base/browser/ui/iconLabel/iconLabelHover.js
@@ -67584,10 +67584,10 @@ configurationRegistry2.registerConfiguration(editorConfiguration);
 
 // node_modules/.pnpm/monaco-editor@0.34.0/node_modules/monaco-editor/esm/vs/editor/common/core/editOperation.js
 var EditOperation = class {
-  static insert(position, text3) {
+  static insert(position, text2) {
     return {
       range: new Range(position.lineNumber, position.column, position.lineNumber, position.column),
-      text: text3,
+      text: text2,
       forceMoveMarkers: true
     };
   }
@@ -67597,16 +67597,16 @@ var EditOperation = class {
       text: null
     };
   }
-  static replace(range2, text3) {
+  static replace(range2, text2) {
     return {
       range: range2,
-      text: text3
+      text: text2
     };
   }
-  static replaceMove(range2, text3) {
+  static replaceMove(range2, text2) {
     return {
       range: range2,
-      text: text3,
+      text: text2,
       forceMoveMarkers: true
     };
   }
@@ -71603,8 +71603,8 @@ ContextMenuService = __decorate20([
 ], ContextMenuService);
 
 // node_modules/.pnpm/monaco-editor@0.34.0/node_modules/monaco-editor/esm/vs/base/common/marshalling.js
-function parse2(text3) {
-  let data = JSON.parse(text3);
+function parse2(text2) {
+  let data = JSON.parse(text2);
   data = revive(data);
   return data;
 }
@@ -72225,9 +72225,9 @@ var SparseMultilineTokens = class {
     const [a, b, bDeltaLine] = this._tokens.split(startLineIndex, range2.startColumn - 1, endLineIndex, range2.endColumn - 1);
     return [new SparseMultilineTokens(this._startLineNumber, a), new SparseMultilineTokens(this._startLineNumber + bDeltaLine, b)];
   }
-  applyEdit(range2, text3) {
-    const [eolCount, firstLineLength, lastLineLength] = countEOL(text3);
-    this.acceptEdit(range2, eolCount, firstLineLength, lastLineLength, text3.length > 0 ? text3.charCodeAt(0) : 0);
+  applyEdit(range2, text2) {
+    const [eolCount, firstLineLength, lastLineLength] = countEOL(text2);
+    this.acceptEdit(range2, eolCount, firstLineLength, lastLineLength, text2.length > 0 ? text2.charCodeAt(0) : 0);
   }
   acceptEdit(range2, eolCount, firstLineLength, lastLineLength, firstCharCode) {
     this._acceptDeleteRange(range2);
@@ -73101,9 +73101,9 @@ function MODEL_ID2(resource) {
 function computeModelSha1(model) {
   const shaComputer = new StringSHA1();
   const snapshot = model.createSnapshot();
-  let text3;
-  while (text3 = snapshot.read()) {
-    shaComputer.update(text3);
+  let text2;
+  while (text2 = snapshot.read()) {
+    shaComputer.update(text2);
   }
   return shaComputer.digest();
 }
@@ -73790,19 +73790,19 @@ ModelSemanticColoring = __decorate24([
 
 // node_modules/.pnpm/monaco-editor@0.34.0/node_modules/monaco-editor/esm/vs/base/browser/ui/iconLabel/iconLabels.js
 var labelWithIconsRegex = new RegExp(`(\\\\)?\\$\\((${CSSIcon.iconNameExpression}(?:${CSSIcon.iconModifierExpression})?)\\)`, "g");
-function renderLabelWithIcons(text3) {
+function renderLabelWithIcons(text2) {
   const elements = new Array();
   let match2;
   let textStart = 0, textStop = 0;
-  while ((match2 = labelWithIconsRegex.exec(text3)) !== null) {
+  while ((match2 = labelWithIconsRegex.exec(text2)) !== null) {
     textStop = match2.index || 0;
-    elements.push(text3.substring(textStart, textStop));
+    elements.push(text2.substring(textStart, textStop));
     textStart = (match2.index || 0) + match2[0].length;
     const [, escaped, codicon] = match2;
     elements.push(escaped ? `$(${codicon})` : renderIcon({ id: codicon }));
   }
-  if (textStart < text3.length) {
-    elements.push(text3.substring(textStart));
+  if (textStart < text2.length) {
+    elements.push(text2.substring(textStart));
   }
   return elements;
 }
@@ -74149,9 +74149,9 @@ var QuickPickItemScorerAccessor = class {
 var quickPickItemScorerAccessor = new QuickPickItemScorerAccessor();
 
 // node_modules/.pnpm/monaco-editor@0.34.0/node_modules/monaco-editor/esm/vs/base/browser/formattedTextRenderer.js
-function renderText(text3, options = {}) {
+function renderText(text2, options = {}) {
   const element = createElement(options);
-  element.textContent = text3;
+  element.textContent = text2;
   return element;
 }
 function renderFormattedText(formattedText, options = {}) {
@@ -74680,13 +74680,13 @@ var InputBox = class extends Widget2 {
       this._onDidHeightChange.fire(this.cachedContentHeight);
     }
   }
-  insertAtCursor(text3) {
+  insertAtCursor(text2) {
     const inputElement = this.inputElement;
     const start = inputElement.selectionStart;
     const end = inputElement.selectionEnd;
     const content = inputElement.value;
     if (start !== null && end !== null) {
-      this.value = content.substr(0, start) + text3 + content.substr(end);
+      this.value = content.substr(0, start) + text2 + content.substr(end);
       inputElement.setSelectionRange(start + 1, start + 1);
       this.layout();
     }
@@ -74794,17 +74794,17 @@ var HighlightedLabel = class {
   get element() {
     return this.domNode;
   }
-  set(text3, highlights = [], title = "", escapeNewLines) {
-    if (!text3) {
-      text3 = "";
+  set(text2, highlights = [], title = "", escapeNewLines) {
+    if (!text2) {
+      text2 = "";
     }
     if (escapeNewLines) {
-      text3 = HighlightedLabel.escapeNewLines(text3, highlights);
+      text2 = HighlightedLabel.escapeNewLines(text2, highlights);
     }
-    if (this.didEverRender && this.text === text3 && this.title === title && equals2(this.highlights, highlights)) {
+    if (this.didEverRender && this.text === text2 && this.title === title && equals2(this.highlights, highlights)) {
       return;
     }
-    this.text = text3;
+    this.text = text2;
     this.title = title;
     this.highlights = highlights;
     this.render();
@@ -74841,10 +74841,10 @@ var HighlightedLabel = class {
     }
     this.didEverRender = true;
   }
-  static escapeNewLines(text3, highlights) {
+  static escapeNewLines(text2, highlights) {
     let total = 0;
     let extra = 0;
-    return text3.replace(/\r\n|\r|\n/g, (match2, offset) => {
+    return text2.replace(/\r\n|\r|\n/g, (match2, offset) => {
       extra = match2 === "\r\n" ? -1 : 0;
       offset += total;
       for (const highlight of highlights) {
@@ -75818,12 +75818,12 @@ __decorate25([
   memoize
 ], QuickInputList.prototype, "onDidChangeSelection", null);
 function matchesContiguousIconAware(query, target) {
-  const { text: text3, iconOffsets } = target;
+  const { text: text2, iconOffsets } = target;
   if (!iconOffsets || iconOffsets.length === 0) {
-    return matchesContiguous(query, text3);
+    return matchesContiguous(query, text2);
   }
-  const wordToMatchAgainstWithoutIconsTrimmed = ltrim(text3, " ");
-  const leadingWhitespaceOffset = text3.length - wordToMatchAgainstWithoutIconsTrimmed.length;
+  const wordToMatchAgainstWithoutIconsTrimmed = ltrim(text2, " ");
+  const leadingWhitespaceOffset = text2.length - wordToMatchAgainstWithoutIconsTrimmed.length;
   const matches = matchesContiguous(query, wordToMatchAgainstWithoutIconsTrimmed);
   if (matches) {
     for (const match2 of matches) {
@@ -86617,17 +86617,17 @@ var BrowserClipboardService = class BrowserClipboardService2 extends Disposable 
       this._register(addDisposableListener(this.layoutService.container, "keydown", handler));
     }
   }
-  writeText(text3, type) {
+  writeText(text2, type) {
     return __awaiter24(this, void 0, void 0, function* () {
       if (type) {
-        this.mapTextToType.set(type, text3);
+        this.mapTextToType.set(type, text2);
         return;
       }
       if (this.webKitPendingClipboardWritePromise) {
-        return this.webKitPendingClipboardWritePromise.complete(text3);
+        return this.webKitPendingClipboardWritePromise.complete(text2);
       }
       try {
-        return yield navigator.clipboard.writeText(text3);
+        return yield navigator.clipboard.writeText(text2);
       } catch (error) {
         console.error(error);
       }
@@ -86636,7 +86636,7 @@ var BrowserClipboardService = class BrowserClipboardService2 extends Disposable 
       textArea.style.height = "1px";
       textArea.style.width = "1px";
       textArea.style.position = "absolute";
-      textArea.value = text3;
+      textArea.value = text2;
       textArea.focus();
       textArea.select();
       document.execCommand("copy");
@@ -86665,9 +86665,9 @@ var BrowserClipboardService = class BrowserClipboardService2 extends Disposable 
       return this.findText;
     });
   }
-  writeFindText(text3) {
+  writeFindText(text2) {
     return __awaiter24(this, void 0, void 0, function* () {
-      this.findText = text3;
+      this.findText = text2;
     });
   }
   readResources() {
@@ -88947,11 +88947,11 @@ function colorizeElement(domNode, options) {
   themeService.registerEditorContainer(domNode);
   return Colorizer.colorizeElement(themeService, languageService, domNode, options);
 }
-function colorize(text3, languageId, options) {
+function colorize(text2, languageId, options) {
   const languageService = StandaloneServices.get(ILanguageService);
   const themeService = StandaloneServices.get(IStandaloneThemeService);
   themeService.registerEditorContainer(document.body);
-  return Colorizer.colorize(languageService, text3, languageId, options);
+  return Colorizer.colorize(languageService, text2, languageId, options);
 }
 function colorizeModelLine(model, lineNumber, tabSize = 4) {
   const themeService = StandaloneServices.get(IStandaloneThemeService);
@@ -88968,10 +88968,10 @@ function getSafeTokenizationSupport(language) {
     tokenize: (line, hasEOL, state) => nullTokenize(language, state)
   };
 }
-function tokenize(text3, languageId) {
+function tokenize(text2, languageId) {
   TokenizationRegistry2.getOrCreate(languageId);
   const tokenizationSupport = getSafeTokenizationSupport(languageId);
-  const lines = splitLines(text3);
+  const lines = splitLines(text2);
   const result = [];
   let state = tokenizationSupport.getInitialState();
   for (let i = 0, len = lines.length; i < len; i++) {
@@ -90202,11 +90202,12 @@ var insertChunk = (editor3, language = "r") => {
       position.lineNumber,
       position.column
     );
+    const text2 = [`\`\`\`{${language}}`, "", "```"].join("\n");
     if (position) {
       editor3.executeEdits("", [
         {
           range: range2,
-          text
+          text: text2
         }
       ]);
       editor3.setPosition(__spreadProps(__spreadValues({}, position), { lineNumber: position.lineNumber + 1 }));
@@ -90219,13 +90220,13 @@ import_loader.default.init().then((monaco) => {
   const wrapper = document.getElementById("quarto-editor");
   monaco.languages.register({ id: "quarto" });
   const properties = {
-    language: "quarto",
+    language: "markdown",
     minimap: { enabled: false },
     automaticLayout: true,
     value: getInitialCode()
   };
   const editor3 = monaco.editor.create(wrapper, properties);
-  monaco.languages.registerCompletionItemProvider("quarto", {
+  monaco.languages.registerCompletionItemProvider("markdown", {
     provideCompletionItems: function(model, position) {
       var word = model.getWordUntilPosition(position);
       var range2 = {

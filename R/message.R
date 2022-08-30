@@ -34,3 +34,5 @@ knit_error_msg <- function(text) {
     )
   }
 }
+
+no_format_msg <- "No format found in YAML header, using HTML as the default."

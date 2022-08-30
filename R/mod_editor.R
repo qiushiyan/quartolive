@@ -24,6 +24,7 @@ mod_editor_server <- function(id, global_rv) {
 
     observeEvent(input$knit, {
       global_rv$error <- NULL
+      global_rv$notice <- NULL
       global_rv$quarto_code <- NULL
       golem::invoke_js("knit", list(prefix = "preview"))
     })

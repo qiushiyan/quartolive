@@ -10,7 +10,7 @@ loader.init().then((monaco) => {
   monaco.languages.register({ id: "quarto" });
 
   const properties = {
-    language: "quarto",
+    language: "markdown",
     minimap: { enabled: false },
     automaticLayout: true,
     value: getInitialCode(),
@@ -19,7 +19,7 @@ loader.init().then((monaco) => {
   const editor = monaco.editor.create(wrapper, properties);
 
   // snippets
-  monaco.languages.registerCompletionItemProvider("quarto", {
+  monaco.languages.registerCompletionItemProvider("markdown", {
     provideCompletionItems: function (model, position) {
       var word = model.getWordUntilPosition(position);
       var range = {

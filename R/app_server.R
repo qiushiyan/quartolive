@@ -11,7 +11,8 @@ app_server <- function(input, output, session) {
   rv <- reactiveValues(
     error = NULL,
     quarto_code = NULL,
-    output_paths = NULL
+    output_paths = NULL,
+    notice = NULL
   )
 
   mod_editor_server("editor", rv)
@@ -24,6 +25,12 @@ app_server <- function(input, output, session) {
         title = "Quarto failed rendering with error",
         rv$error
       ))
+    }
+  })
+
+  observeEvent(rv$notice, {
+    if (!is.null(rv$notice)) {
+      notify(rv$notice, duration = 5, closeButton = TRUE)
     }
   })
 }

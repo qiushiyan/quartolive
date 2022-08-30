@@ -1,4 +1,4 @@
-notify <- function(msg, id = NULL, type = "message", duration = NULL, closeButton = FALSE, ...) {
+notify <- function(msg, id = NULL, type = "message", duration = 5, closeButton = TRUE, ...) {
   showNotification(msg, id = id, duration = duration, closeButton = closeButton, type = type, ...)
 }
 

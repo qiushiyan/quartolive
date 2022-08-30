@@ -46,7 +46,7 @@ golem_add_external_resources <- function() {
       app_title = "quartolive"
     ),
     tags$title("Quarto editor in Shiny"),
+    tags$script(src = "./www/app.js"),
     HTML('<script defer src="www/index.js"></script>'),
-    waiter::use_waiter()
   )
 }
