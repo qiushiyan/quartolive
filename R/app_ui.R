@@ -11,11 +11,11 @@ app_ui <- function(request) {
       theme = bslib::bs_theme(version = 5),
       h1("quartolive"),
       div(
-        col_6(
+        col_4(
           mod_editor_ui("editor"),
           id = "editor-pane"
         ),
-        col_6(
+        col_8(
           mod_preview_ui("preview"),
           id = "preview-pane"
         ),

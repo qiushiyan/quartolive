@@ -125,3 +125,7 @@ is_embed_resources <- function(header, output_format) {
 
   is.list(format_spec) && grepl("self-contained|embed-resources", names(format_spec))
 }
+
+is_missing_dash <- function(code) {
+  any(grepl("^-{1,2}$", code))
+}

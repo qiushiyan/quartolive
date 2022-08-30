@@ -51,6 +51,11 @@ loader.init().then((monaco) => {
     () => insertChunk(editor, "julia")
   );
 
+  editor.addCommand(
+    monaco.KeyMod.CtrlCmd | monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyO,
+    () => insertChunk(editor, "ojs")
+  );
+
   // interaction with shiny
   document.addEventListener("keydown", (event) => {
     if (event.ctrlKey && event.key == "K") {

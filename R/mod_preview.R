@@ -10,7 +10,8 @@
 mod_preview_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    uiOutput(ns("out"))
+    uiOutput(ns("out")),
+    div(spinner(), id = "overlay"),
   )
 }
 
@@ -24,14 +25,17 @@ mod_preview_server <- function(id, global_rv) {
     ns <- session$ns
 
     observeEvent(input$quarto_code, {
-      print("showing screen")
       w$show()
       on.exit(w$hide())
 
       code <- unlist(strsplit(input$quarto_code, "\n"))
+
+      if (is_missing_dash(code)) {
+        notify(missing_dash_msg)
+      }
+
       quarto_data <- partition_input(code)
       header <- parse_front_matter(quarto_data$front_matter)
-
       if (!has_prop(header, "format")) {
         notify(no_format_msg)
       }

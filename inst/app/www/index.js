@@ -90184,8 +90184,16 @@ var createChunkProposals = (range2) => {
     {
       label: '"julia-code-chunk"',
       kind: languages.CompletionItemKind.Function,
-      documentation: "Recursively mkdir, like <code>mkdir -p</code>",
+      documentation: "Insert Julia code chunk",
       insertText: "```{julia}\n${1}\n```",
+      insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      range: range2
+    },
+    {
+      label: '"ojs-code-chunk"',
+      kind: languages.CompletionItemKind.Function,
+      documentation: "Insert Observable Javascript code chunk",
+      insertText: "```{ojs}\n${1}\n```",
       insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
       range: range2
     }
@@ -90251,6 +90259,10 @@ import_loader.default.init().then((monaco) => {
   editor3.addCommand(
     monaco.KeyMod.CtrlCmd | monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyJ,
     () => insertChunk(editor3, "julia")
+  );
+  editor3.addCommand(
+    monaco.KeyMod.CtrlCmd | monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyO,
+    () => insertChunk(editor3, "ojs")
   );
   document.addEventListener("keydown", (event) => {
     if (event.ctrlKey && event.key == "K") {

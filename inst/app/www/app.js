@@ -1,15 +1,24 @@
 $(document).on("shiny:busy", function (event) {
-  const overlay = document.createElement("div");
-  overlay.id = "overlay";
+  const preview_out = document.getElementById("preview-out");
+  const overlay = document.getElementById("overlay");
+  if (preview_out) {
+    preview_out.style.display = "none";
+  }
 
-  overlay.innerText = "hello wolrd";
-  if (document.getElementById("overlay") == null) {
-    document.getElementById("preview-pane").appendChild(overlay);
+  if (overlay) {
+    overlay.style.display = "flex";
   }
 });
 
 $(document).on("shiny:value", function (event) {
-  document.querySelectorAll("#overlay").forEach(function (e) {
-    e.remove();
-  });
+  const preview_out = document.getElementById("preview-out");
+  const overlay = document.getElementById("overlay");
+
+  if (preview_out) {
+    preview_out.style.display = "initial";
+  }
+
+  if (overlay) {
+    overlay.style.display = "none";
+  }
 });

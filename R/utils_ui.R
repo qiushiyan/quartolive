@@ -19,3 +19,14 @@ modal <- function(title, body) {
     easyClose = TRUE
   )
 }
+
+
+spinner <- function() {
+  div(
+    class = "spinner",
+    div(),
+    div(),
+    div(),
+    div()
+  )
+}

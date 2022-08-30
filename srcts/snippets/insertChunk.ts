@@ -25,8 +25,17 @@ export const createChunkProposals = (range: ChunkProposalRange) => {
     {
       label: '"julia-code-chunk"',
       kind: monaco.languages.CompletionItemKind.Function,
-      documentation: "Recursively mkdir, like <code>mkdir -p</code>",
+      documentation: "Insert Julia code chunk",
       insertText: "```{julia}\n${1}\n```",
+      insertTextRules:
+        monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      range: range,
+    },
+    {
+      label: '"ojs-code-chunk"',
+      kind: monaco.languages.CompletionItemKind.Function,
+      documentation: "Insert Observable Javascript code chunk",
+      insertText: "```{ojs}\n${1}\n```",
       insertTextRules:
         monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       range: range,
