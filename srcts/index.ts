@@ -1,7 +1,6 @@
 import loader from "@monaco-editor/loader";
 import { reload_preview, send_editor_code } from "./utils";
 import Split from "split.js";
-import { createChunkProposals } from "./snippets/insertChunk";
 import { insertChunk } from "./actions/insertChunk";
 
 loader.init().then((monaco) => {
@@ -17,22 +16,6 @@ loader.init().then((monaco) => {
   };
 
   const editor = monaco.editor.create(wrapper, properties);
-
-  // snippets
-  monaco.languages.registerCompletionItemProvider("markdown", {
-    provideCompletionItems: function (model, position) {
-      var word = model.getWordUntilPosition(position);
-      var range = {
-        startLineNumber: position.lineNumber,
-        endLineNumber: position.lineNumber,
-        startColumn: word.startColumn,
-        endColumn: word.endColumn,
-      };
-      return {
-        suggestions: createChunkProposals(range),
-      };
-    },
-  });
 
   // shortcuts
 

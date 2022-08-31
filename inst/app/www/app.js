@@ -32,6 +32,5 @@ $(document).on("shiny:value", function (event) {
 });
 
 Shiny.addCustomMessageHandler("error", function (message) {
-  console.log("error happened");
   hideSpinner();
 });

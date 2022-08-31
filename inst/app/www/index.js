@@ -90162,44 +90162,6 @@ if (typeof self.require !== "undefined" && typeof self.require.config === "funct
   });
 }
 
-// srcts/snippets/insertChunk.ts
-var createChunkProposals = (range2) => {
-  return [
-    {
-      label: '"r-code-chunk"',
-      kind: languages.CompletionItemKind.Function,
-      documentation: "Insert R code chunk",
-      insertText: "```{r}\n${1}\n```",
-      insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
-      range: range2
-    },
-    {
-      label: '"python-code-chunk"',
-      kind: languages.CompletionItemKind.Function,
-      documentation: "Insert Python code chunk",
-      insertText: "```{python}\n${1}\n```",
-      insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
-      range: range2
-    },
-    {
-      label: '"julia-code-chunk"',
-      kind: languages.CompletionItemKind.Function,
-      documentation: "Insert Julia code chunk",
-      insertText: "```{julia}\n${1}\n```",
-      insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
-      range: range2
-    },
-    {
-      label: '"ojs-code-chunk"',
-      kind: languages.CompletionItemKind.Function,
-      documentation: "Insert Observable Javascript code chunk",
-      insertText: "```{ojs}\n${1}\n```",
-      insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
-      range: range2
-    }
-  ];
-};
-
 // srcts/actions/insertChunk.ts
 var insertChunk = (editor3, language = "r") => {
   const position = editor3.getPosition();
@@ -90234,20 +90196,6 @@ import_loader.default.init().then((monaco) => {
     value: getInitialCode()
   };
   const editor3 = monaco.editor.create(wrapper, properties);
-  monaco.languages.registerCompletionItemProvider("markdown", {
-    provideCompletionItems: function(model, position) {
-      var word = model.getWordUntilPosition(position);
-      var range2 = {
-        startLineNumber: position.lineNumber,
-        endLineNumber: position.lineNumber,
-        startColumn: word.startColumn,
-        endColumn: word.endColumn
-      };
-      return {
-        suggestions: createChunkProposals(range2)
-      };
-    }
-  });
   editor3.addCommand(
     monaco.KeyMod.CtrlCmd | monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyI,
     () => insertChunk(editor3, "r")

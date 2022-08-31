@@ -42,3 +42,18 @@ export const createChunkProposals = (range: ChunkProposalRange) => {
     },
   ];
 };
+
+// monaco.languages.registerCompletionItemProvider("markdown", {
+//   provideCompletionItems: function (model, position) {
+//     var word = model.getWordUntilPosition(position);
+//     var range = {
+//       startLineNumber: position.lineNumber,
+//       endLineNumber: position.lineNumber,
+//       startColumn: word.startColumn,
+//       endColumn: word.endColumn,
+//     };
+//     return {
+//       suggestions: createChunkProposals(range),
+//     };
+//   },
+// });
