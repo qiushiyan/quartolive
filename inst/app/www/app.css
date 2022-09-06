@@ -29,10 +29,6 @@ iframe {
   word-break: break-all;
 }
 
-#preview-pane {
-  position: relative;
-}
-
 #overlay {
   position: absolute;
   width: 100%;

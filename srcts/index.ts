@@ -1,12 +1,10 @@
 import loader from "@monaco-editor/loader";
 import { reload_preview, send_editor_code } from "./utils";
 import Split from "split.js";
-import { insertChunk } from "./actions/insertChunk";
+// import { insertChunk, registerInsertCommand } from "./actions/insertChunk";
 
 loader.init().then((monaco) => {
   const wrapper = document.getElementById("quarto-editor")!;
-
-  monaco.languages.register({ id: "quarto" });
 
   const properties = {
     language: "markdown",
@@ -18,26 +16,7 @@ loader.init().then((monaco) => {
   const editor = monaco.editor.create(wrapper, properties);
 
   // shortcuts
-
-  editor.addCommand(
-    monaco.KeyMod.CtrlCmd | monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyI,
-    () => insertChunk(editor, "r")
-  );
-
-  editor.addCommand(
-    monaco.KeyMod.CtrlCmd | monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyP,
-    () => insertChunk(editor, "python")
-  );
-
-  editor.addCommand(
-    monaco.KeyMod.CtrlCmd | monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyJ,
-    () => insertChunk(editor, "julia")
-  );
-
-  editor.addCommand(
-    monaco.KeyMod.CtrlCmd | monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyO,
-    () => insertChunk(editor, "ojs")
-  );
+  // registerInsertCommand(editor);
 
   // interaction with shiny
   document.addEventListener("keydown", (event) => {
@@ -66,12 +45,13 @@ loader.init().then((monaco) => {
   );
 });
 
-Split(["#editor-pane", "#preview-pane"], { sizes: [35, 65] });
+Split(["#editor-pane", "#preview-pane"], { sizes: [40, 60] });
 
 function getInitialCode() {
   return [
     "---",
     "title: 'Using Quarto'",
+    "format: html",
     "---",
     " ",
     "Using R",

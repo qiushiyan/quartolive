@@ -34,3 +34,17 @@ spinner <- function() {
     div()
   )
 }
+
+update_loading_screen <- function(w,
+                                  text,
+                                  gif = paste0(
+                                    "https://media1.tenor.com/images",
+                                    "/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139"
+                                  )) {
+  w$update(
+    html = tagList(
+      h4(text, style = "color:gray;"),
+      img(src = gif, height = "200px")
+    )
+  )
+}

@@ -57,5 +57,6 @@ golem_add_external_resources <- function() {
     tags$title("Quarto editor in Shiny"),
     tags$link(rel = "stylesheet", href = "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"),
     HTML('<script defer src="www/index.js"></script>'),
+    waiter::use_waiter()
   )
 }

@@ -19,14 +19,25 @@ mod_preview_ui <- function(id) {
 #'
 #' @noRd
 mod_preview_server <- function(id, global_rv) {
-  # w <- waiter::Waiter$new(id = "preview-pane")
+  gif <- paste0(
+    "https://media1.tenor.com/images",
+    "/cb27704982766b4f02691ea975d9a259/tenor.gif?itemid=11365139"
+  )
+  loading_screen <- tagList(
+    h4("Preprocessing document ...", style = "color:gray;"),
+    img(src = gif, height = "200px")
+  )
+  w <- waiter::Waiter$new(
+    id = "preview-pane",
+    html = loading_screen
+  )
 
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     observeEvent(input$quarto_code, {
-      # w$show()
-      # on.exit(w$hide())
+      w$show()
+      on.exit(w$hide())
 
       code <- unlist(strsplit(input$quarto_code, "\n"))
 
@@ -54,6 +65,7 @@ mod_preview_server <- function(id, global_rv) {
         if (any(supported_exts)) {
           output_exts <- output_exts[supported_exts]
           output_formats <- output_formats[supported_exts]
+          update_loading_screen(w, "Start rendering ...")
           if (length(output_exts) == 1) {
             # only one output format
             results <- knit_one(header, body, output_formats, output_exts)
@@ -99,6 +111,7 @@ mod_preview_server <- function(id, global_rv) {
               }
             }
           }
+          update_loading_screen(w, "Finished rendering!")
         } else {
           global_rv$error <- not_supported_msg(output_formats)
         }
