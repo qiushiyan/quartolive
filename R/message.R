@@ -6,8 +6,13 @@ invalid_yaml_msg <- function(header) {
   ))
 }
 
-no_supported_msg <- function(output_format) {
-  if (length(output_format) == 1) {
+not_supported_msg <- function(output_format) {
+  if (output_format %in% c("docx", "epub")) {
+    msg <- paste0(
+      "docx is not currently supported for preview, ",
+      "you can download the output by clicking the download button."
+    )
+  } else if (length(output_format) == 1) {
     msg <- sprintf("%s is not a supported format.", output_format)
   } else {
     msg <- sprintf("No supported formats found in %s.", paste(output_format, collapse = ", "))
@@ -16,7 +21,7 @@ no_supported_msg <- function(output_format) {
   href <- "https://quarto.org/docs/output-formats/all-formats.html"
   HTML(paste0(
     msg,
-    sprintf("<br/>See <a href='%s'>here</a> for all supported formats.", href)
+    sprintf("<br/>See <a href='%s'>here</a> for all quarto's supported formats.", href)
   ))
 }
 

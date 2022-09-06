@@ -6,7 +6,7 @@ export const reload_preview = (prefix: string = "") => {
   const iframes = document.querySelectorAll(`.${class_name}`);
   iframes.forEach((iframe) => {
     if (iframe !== null && iframe instanceof HTMLIFrameElement) {
-      iframe.contentWindow!.location.reload();
+      iframe.src += "";
     }
   });
 };

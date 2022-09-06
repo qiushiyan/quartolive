@@ -47,6 +47,14 @@ iframe {
   align-items: center;
 }
 
+/* knit and download buttons */
+#control {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
 /* spinner animation */
 .spinner {
   display: inline-block;

@@ -1162,7 +1162,7 @@ var reload_preview = (prefix = "") => {
   const iframes = document.querySelectorAll(`.${class_name}`);
   iframes.forEach((iframe) => {
     if (iframe !== null && iframe instanceof HTMLIFrameElement) {
-      iframe.contentWindow.location.reload();
+      iframe.src += "";
     }
   });
 };
@@ -90232,7 +90232,7 @@ import_loader.default.init().then((monaco) => {
     }
   );
 });
-(0, import_split.default)(["#editor-pane", "#preview-pane"]);
+(0, import_split.default)(["#editor-pane", "#preview-pane"], { sizes: [35, 65] });
 function getInitialCode() {
   return [
     "---",

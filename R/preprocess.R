@@ -129,3 +129,18 @@ is_embed_resources <- function(header, output_format) {
 is_missing_dash <- function(code) {
   any(grepl("^-{1,2}$", code))
 }
+
+get_title <- function(header, body) {
+  if (has_prop(header, "title")) {
+    return(header$title)
+  }
+
+  first_levels <- grep("^#\\s*\\w+", body, value = TRUE)
+  if (length(first_levels) == 1L) {
+    title <- sub("#\\s*", "", first_levels)
+  } else {
+    title <- "quartolive"
+  }
+
+  title
+}

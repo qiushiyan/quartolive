@@ -7,3 +7,5 @@ $run_dev.*
 ^LICENSE\.md$
 ^README\.Rmd$
 ^\.pre-commit-config\.yaml$
+^node_modules$
+

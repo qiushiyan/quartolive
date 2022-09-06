@@ -1,0 +1,9 @@
+output_format,output_ext
+html,html
+revealjs,html
+pdf,pdf
+beamer,pdf
+gfm,md
+commonmark,md
+hugo,md
+

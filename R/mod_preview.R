@@ -11,7 +11,7 @@ mod_preview_ui <- function(id) {
   ns <- NS(id)
   tagList(
     uiOutput(ns("out")),
-    div(spinner(), id = "overlay"),
+    # div(spinner(), id = "overlay"),
   )
 }
 
@@ -19,14 +19,14 @@ mod_preview_ui <- function(id) {
 #'
 #' @noRd
 mod_preview_server <- function(id, global_rv) {
-  w <- waiter::Waiter$new(id = "preview-pane")
+  # w <- waiter::Waiter$new(id = "preview-pane")
 
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     observeEvent(input$quarto_code, {
-      w$show()
-      on.exit(w$hide())
+      # w$show()
+      # on.exit(w$hide())
 
       code <- unlist(strsplit(input$quarto_code, "\n"))
 
@@ -36,6 +36,7 @@ mod_preview_server <- function(id, global_rv) {
 
       quarto_data <- partition_input(code)
       header <- parse_front_matter(quarto_data$front_matter)
+      title <- get_title(header, quarto_data$body)
       if (!has_prop(header, "format")) {
         notify(no_format_msg)
       }
@@ -45,8 +46,9 @@ mod_preview_server <- function(id, global_rv) {
       } else {
         body <- quarto_data$body
         # a named vector where names are output formats, values are file exts
-        output_exts <- get_output_exts(header)
-        output_formats <- names(output_exts)
+        exts_df <- get_output_exts(header)
+        output_exts <- exts_df$output_ext
+        output_formats <- exts_df$output_format
 
         supported_exts <- !is_null(output_exts)
         if (any(supported_exts)) {
@@ -60,6 +62,8 @@ mod_preview_server <- function(id, global_rv) {
             } else {
               global_rv$error <- NULL
               global_rv$output_paths <- results[["res"]]
+              global_rv$output_exts <- output_exts
+              global_rv$title <- title
             }
           } else {
             # multiple formats
@@ -86,6 +90,8 @@ mod_preview_server <- function(id, global_rv) {
               global_rv$error <- knit_error_msg(msgs)
             } else {
               global_rv$output_paths <- output_paths
+              global_rv$output_exts <- output_exts
+              global_rv$title <- title
               if (length(msgs) == 0) {
                 global_rv$error <- NULL
               } else {
@@ -94,7 +100,7 @@ mod_preview_server <- function(id, global_rv) {
             }
           }
         } else {
-          global_rv$error <- no_supported_msg(names(output_exts))
+          global_rv$error <- not_supported_msg(output_formats)
         }
 
         golem::invoke_js("reload_preview", list())
@@ -104,7 +110,7 @@ mod_preview_server <- function(id, global_rv) {
 
     output$out <- renderUI({
       if (is.null(global_rv$output_paths)) {
-        p("preview here")
+        p("preiview here")
       } else {
         if (length(global_rv$output_paths) == 1) {
           preview_frame(global_rv$output_paths)

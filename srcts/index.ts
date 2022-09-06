@@ -66,7 +66,7 @@ loader.init().then((monaco) => {
   );
 });
 
-Split(["#editor-pane", "#preview-pane"]);
+Split(["#editor-pane", "#preview-pane"], { sizes: [35, 65] });
 
 function getInitialCode() {
   return [

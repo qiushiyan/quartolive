@@ -31,3 +31,23 @@ test_that("is_embed_resources works", {
     )
   )
 })
+
+test_that("get_title() extracts title from parsed header and body", {
+  body1 <- c("some line", "# first", "## second")
+  body2 <- c("# first", "# second")
+
+  expect_identical(
+    get_title(list(title = "my title"), body1),
+    "my title"
+  )
+
+  expect_identical(
+    get_title(list(), body1),
+    "first"
+  )
+
+  expect_identical(
+    get_title(list(), body2),
+    "quartolive"
+  )
+})

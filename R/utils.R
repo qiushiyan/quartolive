@@ -26,7 +26,7 @@ merge <- function(x, y) {
 }
 
 yaml_load <- function(...) {
-  yaml::yaml.load(..., eval.expr = TRUE)
+  yaml::yaml.load(..., eval.expr = TRUE, merge.precedence = "override")
 }
 
 # from ymlthis::yml_handlers

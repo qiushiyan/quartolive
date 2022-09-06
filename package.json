@@ -15,7 +15,6 @@
     "dotenv": "^16.0.1",
     "monaco-editor": "^0.34.0",
     "monaco-textmate": "^3.0.1",
-    "onigasm": "^2.2.5",
     "split.js": "^1.6.5"
   },
   "devDependencies": {

@@ -20,31 +20,26 @@ knit <- function(header, body, input, output_format, ext, ...) {
   )
 }
 
-after_knit <- function(input_file, ext) {
-  if (ext %in% c("html", "pdf")) {
+upload <- function(input_file, ext) {
+  if (ext %in% c("html", "pdf", "md")) {
     output_file <- get_output_file(input_file, ext)
-
-    output_base_name <- with_ext(basename(output_file), ext)
-    output_file_copy <- fs::path_join(c(app_sys("app/www"), output_base_name))
-
-    if (!fs::file_exists(output_file_copy)) {
-      fs::file_create(output_file_copy)
-    }
-
-    fs::file_copy(output_file, output_file_copy, overwrite = TRUE)
-
-    paste0("./www/", output_base_name)
+    result <- s3_upload(output_file)
   } else {
     # postprocess other formats
   }
+
+  result
 }
 
 knit_one <- function(header, body, output_format, ext, ...) {
   input_file <- create_qmd()
-  msg <- knit(header, body, input = input_file, output_format = output_format, ext = ext, ...)
-  if (inherits(msg, "try-error")) {
-    return(list(error = TRUE, res = msg))
+  knit_result <- knit(header, body, input = input_file, output_format = output_format, ext = ext, ...)
+  if (inherits(knit_result, "try-error")) {
+    return(list(error = TRUE, res = knit_result))
   }
-  output_path <- after_knit(input_file, ext)
-  list(error = FALSE, res = output_path)
+  upload_result <- upload(input_file, ext)
+  if (inherits(upload_result, "try-error")) {
+    return(list(error = TRUE, res = upload_result))
+  }
+  list(error = FALSE, res = upload_result)
 }

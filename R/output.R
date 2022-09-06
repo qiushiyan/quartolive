@@ -1,20 +1,19 @@
+formats_df <- read.csv(app_sys("formats.csv"))
+
 get_output_exts <- function(header) {
   empty_header <- length(header) == 0
   if (empty_header || !has_format(header)) {
-    return(c("html" = "html"))
+    return(data.frame(output_format = "html", output_ext = "html"))
   }
 
-  all_formats <- if (is.list(header[["format"]])) names(header[["format"]]) else header[["format"]]
-  sapply(all_formats, output_format_to_ext)
-}
+  formats <- if (is.list(header[["format"]])) {
+    names(header[["format"]])
+  } else {
+    header[["format"]]
+  }
 
-output_format_to_ext <- function(output_format) {
-  switch(output_format,
-    "html" = "html",
-    "pdf" = "pdf",
-    "revealjs" = "html",
-    NULL
-  )
+  exts_df <- formats_df[formats_df$output_format %in% formats, , drop = FALSE]
+  exts_df[match(formats, exts_df$output_format), ]
 }
 
 

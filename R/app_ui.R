@@ -5,17 +5,26 @@
 #' @import shiny
 #' @noRd
 app_ui <- function(request) {
+  theme <- bslib::bs_theme(
+    bootswatch = "cerulean",
+    base_font = bslib::font_google("Righteous")
+  )
+
   tagList(
     golem_add_external_resources(),
     fluidPage(
-      theme = bslib::bs_theme(version = 5),
+      theme = theme,
       h1("quartolive"),
       div(
-        col_4(
+        mod_control_ui("control"),
+        id = "control"
+      ),
+      div(
+        div(
           mod_editor_ui("editor"),
           id = "editor-pane"
         ),
-        col_8(
+        div(
           mod_preview_ui("preview"),
           id = "preview-pane"
         ),
@@ -46,7 +55,7 @@ golem_add_external_resources <- function() {
       app_title = "quartolive"
     ),
     tags$title("Quarto editor in Shiny"),
-    tags$script(src = "./www/app.js"),
+    tags$link(rel = "stylesheet", href = "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"),
     HTML('<script defer src="www/index.js"></script>'),
   )
 }

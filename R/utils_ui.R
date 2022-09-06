@@ -20,6 +20,10 @@ modal <- function(title, body) {
   )
 }
 
+bs_icon <- function(name) {
+  class_ <- paste0("bi bi-", name)
+  tags$i(class = class_, `arial-label` = paste0(name, " icon"))
+}
 
 spinner <- function() {
   div(

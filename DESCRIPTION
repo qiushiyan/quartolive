@@ -5,6 +5,7 @@ Authors@R: person('Qiushi', 'Yan', email = 'qiushi.yann@gmail.com', role = c('cr
 Description: This package implements a Quarto editor in Shiny.
 License: MIT + file LICENSE
 Imports:
+    aws.s3,
     bslib,
     config (>= 0.3.1),
     fansi,

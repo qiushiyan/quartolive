@@ -7,7 +7,6 @@ specifiers:
   esbuild: ^0.15.5
   monaco-editor: ^0.34.0
   monaco-textmate: ^3.0.1
-  onigasm: ^2.2.5
   split.js: ^1.6.5
   typescript: ^4.7.4
 
@@ -16,8 +15,7 @@ dependencies:
   '@types/rstudio-shiny': github.com/rstudio/shiny/23e80a7a1ab4a5a7125f8da6add9351990dcf07e
   dotenv: 16.0.1
   monaco-editor: 0.34.0
-  monaco-textmate: 3.0.1_onigasm@2.2.5
-  onigasm: 2.2.5
+  monaco-textmate: 3.0.1
   split.js: 1.6.5
 
 devDependencies:
@@ -298,29 +296,16 @@ packages:
     resolution: {integrity: sha512-2HxzrqJhmMoxVzARjYFvkzkL2dCBB8sogU5sD8gqcZWv5UCivK9/cXM9KIPDRwU+eD3mbRDN/GhW8bO/4dtMfg==}
     dev: false
 
-  /lru-cache/5.1.1:
-    resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
-    dependencies:
-      yallist: 3.1.1
-    dev: false
-
   /monaco-editor/0.34.0:
     resolution: {integrity: sha512-VF+S5zG8wxfinLKLrWcl4WUizMx+LeJrG4PM/M78OhcwocpV0jiyhX/pG6Q9jIOhrb/ckYi6nHnaR5OojlOZCQ==}
     dev: false
 
-  /monaco-textmate/3.0.1_onigasm@2.2.5:
+  /monaco-textmate/3.0.1:
     resolution: {integrity: sha512-ZxxY3OsqUczYP1sGqo97tu+CJmMBwuSW+dL0WEBdDhOZ5G1zntw72hvBc68ZQAirosWvbDKgN1dL5k173QtFww==}
     peerDependencies:
       onigasm: ^2.0.0
     dependencies:
       fast-plist: 0.1.2
-      onigasm: 2.2.5
-    dev: false
-
-  /onigasm/2.2.5:
-    resolution: {integrity: sha512-F+th54mPc0l1lp1ZcFMyL/jTs2Tlq4SqIHKIXGZOR/VkHkF9A7Fr5rRr5+ZG/lWeRsyrClLYRq7s/yFQ/XhWCA==}
-    dependencies:
-      lru-cache: 5.1.1
     dev: false
 
   /split.js/1.6.5:
@@ -336,10 +321,6 @@ packages:
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true
-
-  /yallist/3.1.1:
-    resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
-    dev: false
 
   github.com/rstudio/shiny/23e80a7a1ab4a5a7125f8da6add9351990dcf07e:
     resolution: {tarball: https://codeload.github.com/rstudio/shiny/tar.gz/23e80a7a1ab4a5a7125f8da6add9351990dcf07e}
